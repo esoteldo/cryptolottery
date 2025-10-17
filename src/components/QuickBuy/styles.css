@@ -1,0 +1,18 @@
+@import "tailwindcss";
+@import "../../assets/style/main.css";
+@import "../../assets/style/home.css";
+
+.buy-button {
+            background: linear-gradient(45deg, var(--accent-orange), #ff8c42);
+            transition: all 0.3s ease;
+        }
+        
+        .buy-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(255, 107, 53, 0.4);
+        }
+
+.ticket-card {
+    /* width: calc(100%-20px);  */  
+
+}

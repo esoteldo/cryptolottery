@@ -1,0 +1,27 @@
+@import "tailwindcss";
+:root {
+            --primary-dark: #1a1a1a;
+            --secondary-dark: #0d0d0d;
+            --accent-orange: #ff6b35;
+            --accent-blue: #00d4ff;
+            --success-green: #00ff88;
+            --warning-yellow: #ffd700;
+            --neutral-gray: #888888;
+            --pure-white: #ffffff;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--secondary-dark) 100%);
+            color: var(--pure-white);
+            overflow-x: hidden;
+        }
+
+        .orbitron { font-family: 'Orbitron', monospace; }
+       .jetbrains { font-family: 'JetBrains Mono', monospace; }
+        
+  .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        } 

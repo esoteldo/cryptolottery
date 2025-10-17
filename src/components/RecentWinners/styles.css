@@ -1,0 +1,14 @@
+@import "tailwindcss";
+@import "../../assets/style/main.css";
+@import "../../assets/style/home.css";
+
+#winners-carousel::-webkit-scrollbar{
+    height: 7px;
+    background-color:  var(--neutral-gray) ;
+
+}
+
+#winners-carousel::-webkit-scrollbar-thumb{
+    background-color: var(--secondary-dark);
+    border-radius: 5px;
+}

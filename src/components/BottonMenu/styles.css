@@ -1,0 +1,13 @@
+@import "tailwindcss";
+@import "../../assets/style/main.css";
+
+/* Additional styles specific to BottonMenu can be added here */
+
+.nav-tab {
+            transition: all 0.3s ease;
+        }
+        
+ .nav-tab.active {
+     color: var(--accent-orange);
+     text-shadow: 0 0 10px rgba(255, 107, 53, 0.5);
+ }

@@ -1,0 +1,121 @@
+ @import './main.css';
+
+  /* .orbitron { font-family: 'Orbitron', monospace; }
+       .jetbrains { font-family: 'JetBrains Mono', monospace; }*/
+        
+        .glow-orange {
+            box-shadow: 0 0 20px rgba(255, 107, 53, 0.3);
+            border: 1px solid rgba(255, 107, 53, 0.5);
+        }
+        
+        .glow-blue {
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+            border: 1px solid rgba(0, 212, 255, 0.5);
+        }
+        
+        /* .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }  */
+        
+       /*  .price-ticker {
+            animation: scroll-left 20s linear infinite;
+        }
+        
+        @keyframes scroll-left {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        } */
+        
+        .pulse-glow {
+            animation: pulse-glow 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes pulse-glow {
+            from { box-shadow: 0 0 10px rgba(255, 107, 53, 0.3); }
+            to { box-shadow: 0 0 30px rgba(255, 107, 53, 0.6); }
+        }
+        
+        .countdown-ring {
+            transform: rotate(-90deg);
+        }
+        
+        .winner-card {
+            transition: all 0.3s ease;
+        }
+        
+        .winner-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        #particles-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -1;
+            pointer-events: none;
+        }
+        
+        /* .nav-tab {
+            transition: all 0.3s ease;
+        }
+        
+        .nav-tab.active {
+            color: var(--accent-orange);
+            text-shadow: 0 0 10px rgba(255, 107, 53, 0.5);
+        } */
+        
+       /*  .crypto-price {
+            font-size: 0.9rem;
+            font-weight: 700;
+        } */
+        
+        .last-digits {
+            color: var(--accent-orange);
+            text-shadow: 0 0 10px rgba(255, 107, 53, 0.5);
+        }
+        
+        .pool-amount {
+            font-size: 2.5rem;
+            font-weight: 900;
+            background: linear-gradient(45deg, var(--accent-orange), var(--accent-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        /* .buy-button {
+            background: linear-gradient(45deg, var(--accent-orange), #ff8c42);
+            transition: all 0.3s ease;
+        }
+        
+        .buy-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(255, 107, 53, 0.4);
+        } */
+        
+        .input-field {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--pure-white);
+            transition: all 0.3s ease;
+        }
+        
+        .input-field:focus {
+            border-color: var(--accent-orange);
+            box-shadow: 0 0 10px rgba(255, 107, 53, 0.3);
+            outline: none;
+        }
+
+        .input-field:hover {
+            color: var(--neutral-gray);
+        }
+        
+       /*  .trend-up {
+            color: var(--success-green);
+        }
+        
+        .trend-down {
+            color: #ff4444;
+        } */

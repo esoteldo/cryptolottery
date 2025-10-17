@@ -1,0 +1,12 @@
+@import "tailwindcss";
+@import "../../assets/style/main.css";
+
+.pool-amount {
+            font-size: 2.5rem;
+            font-weight: 900;
+            background: linear-gradient(45deg, var(--accent-orange), var(--accent-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+}
+

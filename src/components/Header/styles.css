@@ -1,0 +1,33 @@
+@import "tailwindcss";
+@import "../../assets/style/main.css";
+
+ 
+
+ 
+
+ .price-ticker {
+            animation: scroll-left 20s linear infinite;
+        }
+        
+ @keyframes scroll-left {
+     0% { transform: translateX(100%); }
+     100% { transform: translateX(-100%); }
+ }
+
+ .crypto-price {
+    font-size: 0.9rem;
+    font-weight: 700;
+}
+
+.trend-up {
+     color: var(--success-green);
+}
+        
+.trend-down {
+    color: #ff4444;
+}
+.last-digits {
+    color: var(--accent-blue);
+    text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+}
+
