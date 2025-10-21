@@ -1,0 +1,119 @@
+@import "tailwindcss";
+@import "../../assets/style/main.css";
+
+.number-grid {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 8px;
+            max-width: 100%;
+        }
+        
+        .number-cell {
+            aspect-ratio: 1;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .number-cell:hover {
+            transform: scale(1.05);
+        }
+        
+        .number-cell.selected-orange {
+            background: var(--accent-orange);
+            border-color: var(--accent-orange);
+            box-shadow: 0 0 15px rgba(255, 107, 53, 0.5);
+            color: white;
+        }
+        
+        .number-cell.selected-blue {
+            background: var(--accent-blue);
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.5);
+            color: white;
+        }
+        
+        .number-cell.disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+        
+        .selected-display {
+            background: linear-gradient(45deg, var(--accent-orange), var(--accent-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 2rem;
+            font-weight: 900;
+        }
+        
+        .buy-button {
+            background: linear-gradient(45deg, var(--accent-orange), #ff8c42);
+            transition: all 0.3s ease;
+        }
+        
+        .buy-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(255, 107, 53, 0.4);
+        }
+        
+        .quick-pick-button {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .quick-pick-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-1px);
+        }
+        
+        .nav-tab {
+            transition: all 0.3s ease;
+        }
+        
+        .nav-tab.active {
+            color: var(--accent-orange);
+            text-shadow: 0 0 10px rgba(255, 107, 53, 0.5);
+        }
+        
+        #particles-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -1;
+            pointer-events: none;
+        }
+        
+        .ticket-summary {
+            position: sticky;
+            bottom: 80px;
+            z-index: 40;
+        }
+        
+        .crypto-section {
+            margin-bottom: 2rem;
+        }
+        
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+        
+        .bitcoin-title {
+            color: var(--accent-orange);
+        }
+        
+        .ethereum-title {
+            color: var(--accent-blue);
+        }

@@ -36,7 +36,7 @@ const Refer = () => {
                       <button className="copy-button flex-1 py-3 rounded-lg text-white font-bold" onClick={()=>{}}  >
                           📋 Copy Link
                       </button>
-                      <button className="share-button px-6 py-3 rounded-lg" onclick={()=>{}} >
+                      <button className="share-button px-6 py-3 rounded-lg" onClick={()=>{}} >
                           📤 Share
                       </button>
                   </div>

@@ -1,8 +1,8 @@
 
 import Main from "./pages/Main.jsx"
 import {  Routes, Route } from "react-router";
-import Tickets from "./pages/TIckets.jsx";
-import Results from "./pages/Results.jsx";
+import Tickets from "./pages/Tickets/index.jsx";
+import Results from "./pages/Results";
 import Refer from "./pages/Refer";
 import TermsConditions from "./pages/TermsConditions.jsx";
 import BottonMenu from "./components/BottonMenu/index.jsx";
@@ -15,7 +15,7 @@ function App() {
     <>
     <Header />
       <Routes>
-        <Route path="/" element={<Main />} />
+        <Route path="/:idReferal" element={<Main />} />
         <Route path="/tickets" element={<Tickets />} />
         <Route path="/results" element={<Results />} />
         <Route path="/referral" element={<Refer />} />

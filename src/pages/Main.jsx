@@ -5,9 +5,13 @@ import HowToPlay from "../components/HowToPlay"
 import PrizePool from "../components/PrizePool"
 import QuickBuy from "../components/QuickBuy"
 import RecentWinners from "../components/RecentWinners"
-
+import { useParams } from "react-router";
 
 const Main = () => {
+
+    let { idReferal } = useParams();
+    console.log('referal id '+idReferal);
+
   return (
     <>
     {/* <!-- Particle Background --> */}

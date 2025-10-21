@@ -1,0 +1,110 @@
+@import "tailwindcss";
+@import "../../assets/style/main.css";
+
+
+.result-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .result-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+        
+        .result-card.expanded {
+            transform: none;
+        }
+        
+        .winner-details {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        
+        
+        .winner-details.expanded {
+            max-height: 200px;
+        }
+        
+        .filter-button {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .filter-button.active {
+            background: var(--accent-orange);
+            border-color: var(--accent-orange);
+            box-shadow: 0 0 15px rgba(255, 107, 53, 0.3);
+        }
+        
+        .search-input {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--pure-white);
+            transition: all 0.3s ease;
+        }
+        
+        .search-input:focus {
+            border-color: var(--accent-orange);
+            box-shadow: 0 0 10px rgba(255, 107, 53, 0.3);
+            outline: none;
+        }
+        
+        .nav-tab {
+            transition: all 0.3s ease;
+        }
+        
+        .nav-tab.active {
+            color: var(--accent-orange);
+            text-shadow: 0 0 10px rgba(255, 107, 53, 0.5);
+        }
+        
+        #particles-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -1;
+            pointer-events: none;
+        }
+        
+        .chart-container {
+            height: 300px;
+            margin: 1rem 0;
+        }
+        
+        .stat-card {
+            text-align: center;
+            padding: 1rem;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 900;
+            background: linear-gradient(45deg, var(--accent-orange), var(--accent-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .winning-number {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.5rem;
+            font-weight: bold;
+            margin: 0 0.25rem;
+        }
+        
+        .bitcoin-number {
+            background: rgba(255, 107, 53, 0.2);
+            color: var(--accent-orange);
+            border: 1px solid var(--accent-orange);
+        }
+        
+        .ethereum-number {
+            background: rgba(0, 212, 255, 0.2);
+            color: var(--accent-blue);
+            border: 1px solid var(--accent-blue);
+        }
