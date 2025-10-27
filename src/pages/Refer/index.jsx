@@ -1,7 +1,11 @@
+import ShareModal from "../../components/ShareModal";
+import { useGetPrices } from "../../context/getPricesContext";
 import "./styles.css";
 import {QRCodeSVG} from 'qrcode.react';
 
 const Refer = () => {
+    const textToCopy = 'https://cryptolottery.app/ref/USER123XYZ';
+    const {shareModal,setShareModal} = useGetPrices();
 
   return (
         /* Hero Section  */
@@ -30,13 +34,13 @@ const Refer = () => {
               <div className="glass-card rounded-2xl p-6 mb-6 text-center">
                   <h2 className="text-lg font-semibold mb-4 text-gray-300">Your Referral Link</h2>
                   <div className="referral-link rounded-lg p-4 mb-4 text-sm" id="referral-link">
-                      https://cryptolottery.app/ref/USER123XYZ
+                      {textToCopy}
                   </div>
                   <div className="flex space-x-3 mb-4">
-                      <button className="copy-button flex-1 py-3 rounded-lg text-white font-bold" onClick={()=>{}}  >
+                      <button className="copy-button flex-1 py-3 rounded-lg text-white font-bold" onClick={async()=>{await navigator.clipboard.writeText(textToCopy);}}  >
                           📋 Copy Link
                       </button>
-                      <button className="share-button px-6 py-3 rounded-lg" onClick={()=>{}} >
+                      <button className="share-button px-6 py-3 rounded-lg" onClick={()=>{setShareModal(true);console.log(shareModal)}} >
                           📤 Share
                       </button>
                   </div>
@@ -96,11 +100,11 @@ const Refer = () => {
                               <div className="w-8 h-8 bg-yellow-600 rounded-full flex items-center justify-center text-xs font-bold">🥉</div>
                               <div>
                                   <div className="font-semibold">Bronze</div>
-                                  <div className="text-xs text-gray-400">0-49 referrals</div>
+                                  <div className="text-xs text-gray-400">0-19 referrals</div>
                               </div>
                           </div>
                           <div className="text-right">
-                              <div className="font-bold">3%</div>
+                              <div className="font-bold">1%</div>
                               <div className="text-xs text-gray-400">commission</div>
                           </div>
                       </div>
@@ -110,11 +114,11 @@ const Refer = () => {
                               <div className="w-8 h-8 bg-gray-400 rounded-full flex items-center justify-center text-xs font-bold">🥈</div>
                               <div>
                                   <div className="font-semibold">Silver</div>
-                                  <div className="text-xs text-gray-400">50-99 referrals</div>
+                                  <div className="text-xs text-gray-400">20-49 referrals</div>
                               </div>
                           </div>
                           <div className="text-right">
-                              <div className="font-bold">5%</div>
+                              <div className="font-bold">3%</div>
                               <div className="text-xs text-gray-400">commission</div>
                           </div>
                       </div>
@@ -124,11 +128,11 @@ const Refer = () => {
                               <div className="w-8 h-8 bg-yellow-400 rounded-full flex items-center justify-center text-xs font-bold">🥇</div>
                               <div>
                                   <div className="font-semibold">Gold</div>
-                                  <div className="text-xs text-gray-400">100+ referrals</div>
+                                  <div className="text-xs text-gray-400">50+ referrals</div>
                               </div>
                           </div>
                           <div className="text-right">
-                              <div className="font-bold">7%</div>
+                              <div className="font-bold">5%</div>
                               <div className="text-xs text-gray-400">commission</div>
                           </div>
                       </div>
@@ -152,7 +156,7 @@ const Refer = () => {
               </div>
           </div>
       </  div>
-
+    <ShareModal />
     </div>
   ) 
 } 

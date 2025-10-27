@@ -20,6 +20,8 @@ export const GetPricesProvider=({children})=>{
         eth:0,
         ton:0
     });
+
+    const [shareModal, setShareModal]=useState(false);
     
     const [loaderPrice,setLoaderPrice]=useState(false);
 
@@ -53,7 +55,9 @@ export const GetPricesProvider=({children})=>{
             {prices,
              setPrices,
              loaderPrice,
-             setLoaderPrice
+             setLoaderPrice,
+             shareModal,
+             setShareModal
             }}
              >
             {children}

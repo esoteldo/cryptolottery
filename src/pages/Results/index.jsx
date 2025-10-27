@@ -31,18 +31,18 @@ const Results = () => {
     </header>
 
      {/* Search and Filters  */}
-    <div className="p-4 pb-2">
+    <div className="p-4 pb-2" >
         <div className="glass-card rounded-2xl p-4 mb-4">
             <div className="space-y-4">
                 <div>
                     <input type="text" placeholder="Search by numbers (e.g., 42,23)" className="search-input w-full px-4 py-3 rounded-lg" id="search-input" />
                 </div>
-                <div className="flex space-x-2 overflow-x-auto pb-2">
-                    <button className="filter-button active px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap" data-filter="all">All Results</button>
-                    <button className="filter-button px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap" data-filter="today">Today</button>
-                    <button className="filter-button px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap" data-filter="week">This Week</button>
-                    <button className="filter-button px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap" data-filter="month">This Month</button>
-                    <button className="filter-button px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap" data-filter="jackpot">Jackpots</button>
+                <div className="flex space-x-2 flex-wrap overflow-x-hidden pb-2" id='search-box'>
+                    <button className="filter-button active px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap mb-2" data-filter="all">All Results</button>
+                    <button className="filter-button px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap mb-2" data-filter="today">Today</button>
+                    <button className="filter-button px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap mb-2" data-filter="week">This Week</button>
+                    <button className="filter-button px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap mb-2" data-filter="month">This Month</button>
+                    <button className="filter-button px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap mb-2" data-filter="jackpot">Jackpots</button>
                 </div>
             </div>
         </div>

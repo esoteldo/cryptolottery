@@ -1,11 +1,32 @@
 import { defineConfig } from 'vite'
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
+import basicSsl from '@vitejs/plugin-basic-ssl'
+import { nodePolyfills } from 'vite-plugin-node-polyfills';
+
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(),
-  tailwindcss()
+  tailwindcss(),
+  basicSsl(), 
+  nodePolyfills()
   ],
+  resolve:{
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+    },
+  },
+  build: {
+    outDir: './docs'
+  },
+  
+  base: './',
   
 })
