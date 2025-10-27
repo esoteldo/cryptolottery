@@ -7,7 +7,7 @@ const BottonMenu = () => {
      /* Bottom Navigation */
     <nav className="fixed bottom-0 left-0 right-0 bg-black bg-opacity-80 backdrop-blur-lg border-t border-gray-800 z-50">
         <div className="flex justify-around py-3">
-            <NavLink to="/312312"  className="nav-tab active flex flex-col items-center space-y-1" end>
+            <NavLink to="/"  className="nav-tab active flex flex-col items-center space-y-1" end>
                 <div className="w-6 h-6 flex items-center justify-center">🏠</div>
                 <span className="text-xs">Lottery</span>
             </NavLink>

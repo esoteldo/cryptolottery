@@ -2,9 +2,33 @@ import ShareModal from "../../components/ShareModal";
 import { useGetPrices } from "../../context/getPricesContext";
 import "./styles.css";
 import {QRCodeSVG} from 'qrcode.react';
+import WebApp from '@twa-dev/sdk'
+import { useEffect, useState } from "react";
+
+ const generareReferralCode = (length) => {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let result = '';
+    for (let i = 0; i < length; i++) {
+      result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return result;
+}
+
+
 
 const Refer = () => {
-    const textToCopy = 'https://cryptolottery.app/ref/USER123XYZ';
+    const [userData,setUserData] = useState({})
+
+
+
+    useEffect(() => {
+    if(WebApp.initDataUnsafe.user){
+      //data del usuario de telegram
+      setUserData(WebApp.initDataUnsafe.user)
+    }
+  }, [])
+
+    const textToCopy = `t.me/cryptolotteryappbot/CryptoLottery/${userData?userData.id:generareReferralCode(10)}`;
     const {shareModal,setShareModal} = useGetPrices();
 
   return (
