@@ -20,15 +20,21 @@ const Refer = () => {
     const [userData,setUserData] = useState({})
 
 
-
+    const [referalcode,setReferalcode] = useState('')
+    const [istelegram,setIsTelegram] = useState(false)
     useEffect(() => {
+        
     if(WebApp.initDataUnsafe.user){
       //data del usuario de telegram
       setUserData(WebApp.initDataUnsafe.user)
+      setIsTelegram(true)
+    }else{
+        setReferalcode(generareReferralCode(10));
+        setIsTelegram(false)
     }
   }, [])
 
-    const textToCopy = `t.me/cryptolotteryappbot/CryptoLottery/${userData?userData.id:generareReferralCode(10)}`;
+    const textToCopy = `https://t.me/cryptolotteryappbot/CryptoLottery/${istelegram?userData.id:referalcode}`;
     const {shareModal,setShareModal} = useGetPrices();
 
   return (
@@ -70,7 +76,7 @@ const Refer = () => {
                   </div>
                   <div className="qr-container mx-auto">
                       <QRCodeSVG
-                        value={'https://cryptolottery.app/ref/USER123XYZ'}
+                        value={textToCopy}
                         size={170} // Size of the QR code in pixels
                         level="H" // Error correction level (L, M, Q, H)
                         bgColor="#FFFFFF" // Background color
