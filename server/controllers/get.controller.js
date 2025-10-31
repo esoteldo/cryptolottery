@@ -45,6 +45,7 @@ export const getInitData=async(req,res)=>{
 
     try {
         const userId = req.params.id;
+        
         console.log(userId)
         
         res.status(200).json({id:userId})
