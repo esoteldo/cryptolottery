@@ -33,7 +33,7 @@ const homeSchema= new mongoose.Schema({
     },
     idUltimoSorteo:{
         type:mongoose.Schema.Types.ObjectId,
-        ref:'Sorteo',
+        ref:'Home',
         required:true
     }
 
@@ -42,4 +42,4 @@ const homeSchema= new mongoose.Schema({
     timestamps:true
 })
 
-export default mongoose.model('Sorteo',homeSchema);
+export default mongoose.model('Home',homeSchema);

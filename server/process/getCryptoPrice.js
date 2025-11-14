@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import Home from '../models/home.model.js';
 import { connectDB } from "./db.js";
+import { API_KEY_CRYPTOCOMPARE } from '../src/config.js';
 
 
 
@@ -11,7 +12,7 @@ const baseUrl = 'https://data-api.coindesk.com/spot/v1/latest/tick';
 const params = {
     "market":"binance",
     "instruments":"BTC-USDT,ETH-USDT,TON-USDT","apply_mapping":"true",
-    "api_key":""};
+    "api_key":API_KEY_CRYPTOCOMPARE};
 const url = new URL(baseUrl);
 url.search = new URLSearchParams(params).toString();
 
