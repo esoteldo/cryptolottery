@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { getBinancePrice } from "../helpers/getBinancePrice";
+import { getInitData } from "../api/data";
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const getPricesContext=createContext();
@@ -25,12 +26,23 @@ export const GetPricesProvider=({children})=>{
     
     const [loaderPrice,setLoaderPrice]=useState(false);
 
+    useEffect(() => {
+        if(prices.btc!==0 && prices.eth!==0 && prices.ton!==0){
+            setLoaderPrice(true);
+        }else{
+            setLoaderPrice(false);
+        }
+    }, [prices, setLoaderPrice]);
+
     useEffect(()=>{
+
+
+        
         const binancePrices=new getBinancePrice(setPrices);
-  
+        
         binancePrices.getPrices(setPrices);
         setLoaderPrice(false);
-    
+        
         const interval=setInterval(()=>{
             
         binancePrices.getPrices(setPrices);
@@ -46,6 +58,19 @@ export const GetPricesProvider=({children})=>{
 
         }
     },[])
+
+    
+
+    const getHomeData=async()=>{
+        
+        try {
+            const response=await getInitData(id);
+            const data=await response.json();
+            console.log(data);
+        } catch (error) {
+            console.log(error);
+        }
+    }
     
    
 
@@ -53,6 +78,7 @@ export const GetPricesProvider=({children})=>{
     return(
         <getPricesContext.Provider value={
             {prices,
+             getHomeData,
              setPrices,
              loaderPrice,
              setLoaderPrice,

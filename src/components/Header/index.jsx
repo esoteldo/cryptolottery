@@ -7,16 +7,10 @@ import { useEffect, useState } from "react"
 
 const Header = () => {
 
-    const {prices,loaderPrice,setLoaderPrice}=useGetPrices();
+    const {prices,loaderPrice}=useGetPrices();
     console.log("Renderizando Header");
     /* console.log(prices,loaderPrice); */
-    useEffect(() => {
-        if(prices.btc!==0 && prices.eth!==0 && prices.ton!==0){
-            setLoaderPrice(true);
-        }else{
-            setLoaderPrice(false);
-        }
-    }, [prices, setLoaderPrice]);
+    
     const [porcentajeBtc,setPorcentajeBtc]=useState(0);
     const [porcentajeEth,setPorcentajeEth]=useState(0);
     const [porcentajeTon,setPorcentajeTon]=useState(0);
