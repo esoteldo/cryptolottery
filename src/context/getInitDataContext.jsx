@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 
 import { getInitData } from "../api/data";
 import { useGetTelegramData } from "./getTelegramDataContext";
+import { errorInitData } from "../helpers/sweetAlert";
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const getInitDataContext=createContext();
@@ -35,12 +36,17 @@ export const GetInitDataProvider=({children})=>{
                 const id=userData.id;
                  
                  fetchData(id);
+                 
             }else{
                 //TODO: manejar el caso cuando no se ha inicializado el usuario
+                
                 
             }
          }catch(error){
              console.error("Error fetching init data:", error);
+             errorInitData(error.message);
+             setInitializedData(false);
+
          }
       
     }, [])

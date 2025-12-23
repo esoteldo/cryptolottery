@@ -4,6 +4,7 @@ import "./styles.css";
 import {QRCodeSVG} from 'qrcode.react';
 import WebApp from '@twa-dev/sdk'
 import { useEffect, useState } from "react";
+import { useGetTelegramData } from "../../context/getTelegramDataContext";
 
  const generareReferralCode = (length) => {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -17,24 +18,21 @@ import { useEffect, useState } from "react";
 
 
 const Refer = () => {
-    const [userData,setUserData] = useState({})
+    const {userData,initializedUser} = useGetTelegramData();
 
 
-    const [referalcode,setReferalcode] = useState('')
-    const [istelegram,setIsTelegram] = useState(false)
-    useEffect(() => {
-        
-    if(WebApp.initDataUnsafe.user){
-      //data del usuario de telegram
-      setUserData(WebApp.initDataUnsafe.user)
-      setIsTelegram(true)
-    }else{
-        setReferalcode(generareReferralCode(10));
-        setIsTelegram(false)
+    const [referalcode,setReferalcode] = useState('');
+
+    useEffect(() => {   
+    if(!initializedUser){
+        const code=generareReferralCode(10);
+        setReferalcode(code);
+        console.log("Generated referral code for non-telegram user:", code);
     }
-  }, [])
+    }, []);
+    
 
-    const textToCopy = `https://t.me/cryptolotteryappbot/CryptoLottery/${istelegram?userData.id:referalcode}`;
+    const textToCopy = `https://t.me/cryptolotteryappbot/CryptoLottery/${initializedUser?userData.id:referalcode}`;
     const {shareModal,setShareModal} = useGetPrices();
 
   return (
@@ -190,5 +188,6 @@ const Refer = () => {
     </div>
   ) 
 } 
+
 
 export default Refer

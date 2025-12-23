@@ -1,4 +1,6 @@
-import { createContext, useContext } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
+import WebApp from '@twa-dev/sdk';
+import { noTelegramId } from "../helpers/sweetAlert";
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const getTelegramDataContext=createContext();
@@ -14,6 +16,27 @@ export const useGetTelegramData=()=>{
 
 export const GetTelegramDataProvider=({children})=>{
 
+    const [userData, setUserData]=useState({
+        id:null,
+        first_name:null,
+        last_name:null,
+        username:null,
+        language_code:null
+    })
+    const [initializedUser, setInitializedUser]=useState(false);
+
+    useEffect(() => {
+    if(WebApp.initDataUnsafe.user){
+      //data del usuario de telegram
+      setInitializedUser(true);
+      setUserData(WebApp.initDataUnsafe.user)
+    }else{
+        console.log("no telegram user data found");
+        noTelegramId('no telegram user data found');
+      setInitializedUser(false);
+    }
+  }, [])
+
     
    
 
@@ -21,6 +44,8 @@ export const GetTelegramDataProvider=({children})=>{
     return(
         <getTelegramDataContext.Provider value={
             {
+                userData,
+                initializedUser
 
             }}
              >

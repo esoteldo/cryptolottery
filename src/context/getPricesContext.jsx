@@ -59,26 +59,10 @@ export const GetPricesProvider=({children})=>{
         }
     },[])
 
-    
-
-    const getHomeData=async()=>{
-        
-        try {
-            const response=await getInitData(id);
-            const data=await response.json();
-            console.log(data);
-        } catch (error) {
-            console.log(error);
-        }
-    }
-    
-   
-
 
     return(
         <getPricesContext.Provider value={
             {prices,
-             getHomeData,
              setPrices,
              loaderPrice,
              setLoaderPrice,

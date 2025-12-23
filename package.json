@@ -25,6 +25,7 @@
     "react-p5": "^1.4.1",
     "react-router": "^7.9.4",
     "react-share": "^5.2.2",
+    "sweetalert2": "^11.26.10",
     "tailwindcss": "^4.1.14",
     "vite-plugin-node-polyfills": "^0.24.0"
   },
