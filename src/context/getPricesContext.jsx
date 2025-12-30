@@ -47,7 +47,7 @@ export const GetPricesProvider=({children})=>{
             
         binancePrices.getPrices(setPrices);
         
-        },30000);
+        },310000); //5 minutes interval
         
         return()=>{
             //cleanup function
