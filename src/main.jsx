@@ -15,7 +15,7 @@ createRoot(document.getElementById('root')).render(
       manifestUrl={manifestUrl}
       actionsConfiguration={{ twaReturnUrl: 'https://t.me/cryptolotteryappbot/CryptoLottery' }}
     >
-      <BrowserRouter basename="/cryptolottery">
+      <BrowserRouter basename={import.meta.env.BASE_URL}>
         <GetTelegramDataProvider>
               <GetInitDataProvider>
                     <GetPricesProvider>

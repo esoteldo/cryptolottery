@@ -15,18 +15,28 @@ const __dirname = dirname(__filename);
 export default defineConfig({
   plugins: [react(),
   tailwindcss(),
-  basicSsl(), 
-  nodePolyfills()
+  // basicSsl(), // Desactivado para dev local, activar para Telegram Mini App
+  nodePolyfills({
+    include: ['buffer', 'crypto', 'stream', 'util', 'process'],
+    globals: {
+      Buffer: true,
+      global: true,
+      process: true,
+    },
+  })
   ],
   resolve:{
     alias: {
       '@': path.resolve(__dirname, './src'),
+      'vite-plugin-node-polyfills/shims/buffer': path.resolve(__dirname, 'node_modules/vite-plugin-node-polyfills/shims/buffer'),
+      'vite-plugin-node-polyfills/shims/global': path.resolve(__dirname, 'node_modules/vite-plugin-node-polyfills/shims/global'),
+      'vite-plugin-node-polyfills/shims/process': path.resolve(__dirname, 'node_modules/vite-plugin-node-polyfills/shims/process'),
     },
   },
   build: {
     outDir: './docs'
   },
   
-  base: './',
+  base: process.env.NODE_ENV === 'production' ? '/cryptolottery/' : '/',
   
 })
