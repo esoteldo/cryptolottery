@@ -136,12 +136,12 @@ const QuickBuy = () => {
                         connected ? 'BUY TICKETS NOW' : 'CONNECT WALLET'}
                 </button>
 
-                <label className="flex items-start gap-2 text-xs text-gray-300 cursor-pointer select-none">
+                <label className="flex items-center justify-center gap-2 text-xs text-gray-300 cursor-pointer select-none">
                     <input
                         type="checkbox"
                         checked={termsAccepted}
                         onChange={(e) => setTermsAccepted(e.target.checked)}
-                        className="mt-0.5 w-4 h-4 accent-orange-500 cursor-pointer"
+                        className="w-4 h-4 accent-orange-500 cursor-pointer"
                     />
                     <span>
                         I accept the{' '}
