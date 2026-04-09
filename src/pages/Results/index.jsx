@@ -107,8 +107,13 @@ const Results = () => {
                         results.map((result, index) => {
                             const sorteo = mode === 'sorteos' ? result : result.idSorteo;
                             const expanded = expandedIndex === index;
-                            const btcDigits = sorteo?.precioBitcoin ? sorteo.precioBitcoin.toString().slice(-2) : '--';
-                            const ethDigits = sorteo?.precioEthereum ? sorteo.precioEthereum.toString().slice(-2) : '--';
+                            const lastTwoDigits = (price) => {
+                                if (price === undefined || price === null) return '--';
+                                const intPart = price.toString().split('.')[0];
+                                return intPart.slice(-2).padStart(2, '0');
+                            };
+                            const btcDigits = lastTwoDigits(sorteo?.precioBitcoin);
+                            const ethDigits = lastTwoDigits(sorteo?.precioEthereum);
 
                             return (
                                 <div key={result._id || index} className="result-card glass-card rounded-2xl p-4" onClick={() => toggleCard(index)}>

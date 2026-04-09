@@ -6,6 +6,12 @@ import "./styles.css";
 const RecentWinners = () => {
     const { initData, initializedData } = useGetInitData();
 
+    const lastTwoDigits = (price) => {
+        if (price === undefined || price === null) return '--';
+        const intPart = price.toString().split('.')[0];
+        return intPart.slice(-2).padStart(2, '0');
+    };
+
     // Transformar datos del backend al formato del componente
     const winners = initializedData && initData?.winners
         ? initData.winners.map((w) => ({
@@ -16,12 +22,8 @@ const RecentWinners = () => {
             montoPremio: w.idSorteo?.montoGanadoPorUsuario || '0',
             fechaPremio: w.idSorteo?.fecha || '',
             numeroSorteo: w.idSorteo?.numeroSorteo || '-',
-            numeroGanadorBtc: w.idSorteo?.precioBitcoin
-                ? w.idSorteo.precioBitcoin.toString().slice(-2)
-                : '--',
-            numeroGanadorEth: w.idSorteo?.precioEthereum
-                ? w.idSorteo.precioEthereum.toString().slice(-2)
-                : '--'
+            numeroGanadorBtc: lastTwoDigits(w.idSorteo?.precioBitcoin),
+            numeroGanadorEth: lastTwoDigits(w.idSorteo?.precioEthereum)
         }))
         : [];
 
