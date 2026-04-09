@@ -1,6 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { getBinancePrice } from "../helpers/getBinancePrice";
-import { getInitData } from "../api/data";
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const getPricesContext=createContext();
@@ -36,26 +35,10 @@ export const GetPricesProvider=({children})=>{
 
     useEffect(()=>{
 
-
-        
         const binancePrices=new getBinancePrice(setPrices);
-        
-        binancePrices.getPrices(setPrices);
-        setLoaderPrice(false);
-        
-        const interval=setInterval(()=>{
-            
-        binancePrices.getPrices(setPrices);
-        
-        },310000); //5 minutes interval
-        
-        return()=>{
-            //cleanup function
-            clearInterval(interval);
-            binancePrices.prices.close();
-            console.log("WebSockets closed");
-             /* setLoaderPrice(false); */
 
+        return()=>{
+            binancePrices.prices.close();
         }
     },[])
 

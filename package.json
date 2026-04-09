@@ -11,7 +11,11 @@
     "zrok": "zrok share public ./docs --backend-mode web"
   },
   "dependencies": {
+    "@orbs-network/ton-access": "^2.3.3",
     "@tailwindcss/vite": "^4.1.14",
+    "@ton/core": "^0.63.1",
+    "@ton/ton": "^16.2.3",
+    "@tonconnect/ui-react": "^2.4.4",
     "@twa-dev/sdk": "^8.0.2",
     "@vitejs/plugin-basic-ssl": "^2.1.0",
     "animejs": "^4.2.2",

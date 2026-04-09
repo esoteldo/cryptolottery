@@ -26,8 +26,7 @@ const sorteoSchema= new mongoose.Schema({
     },
     prizePool:{
         type: Number,
-        trim:true,
-        default:'0'
+        default: 0
     }
 },{
     timestamps:true

@@ -10,11 +10,18 @@
             --pure-white: #ffffff;
         }
         
-        body {
+        html, body {
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--secondary-dark) 100%);
+            background: #0d0d0d !important;
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--secondary-dark) 100%) !important;
             color: var(--pure-white);
             overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        #root {
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--secondary-dark) 100%);
         }
 
         .orbitron { font-family: 'Orbitron', monospace; }

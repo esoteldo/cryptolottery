@@ -26,50 +26,32 @@ export const GetInitDataProvider=({children})=>{
 
 
     useEffect( () => {
-        
-        try{
+
         const fetchData=async(id)=>{
-                     const data=await getInitData(id);
-                     setInitData(data.data.datahome);
-
-                     setInitializedData(true);
-                 }
-        
-            if(initializedUser){
-                const id=userData.id;
-                 
-                 fetchData(id);
-                 
-            }else{
-                //TODO: manejar el caso cuando no se ha inicializado el usuario
-                const id=getRandomNumber(10);
-                fetchData(id).then(()=>{
-                    console.log("Init data fetched for random id:", initData);
-                });
-                
+            try {
+                const data=await getInitData(id);
+                setInitData(data.data);
+                setInitializedData(true);
+            } catch(error) {
+                console.error("Error fetching init data:", error);
+                errorInitData(error.message);
+                setInitializedData(false);
             }
+        }
 
-            const interval=setInterval(()=>{
-                if(initializedUser){
-                    const id=userData.id;
-                    fetchData(id);
-                }else{
-                    const id=getRandomNumber(10);
-                    fetchData(id);
-                }
-            },310000); //5 minutes interval
-            return()=>{
-                clearInterval(interval);
-            }
-            
-         }catch(error){
-             console.error("Error fetching init data:", error);
-             errorInitData(error.message);
-             setInitializedData(false);
+        const id = initializedUser ? userData.id : getRandomNumber(10);
+        fetchData(id);
 
-         }
-      
-    }, [])
+        const interval=setInterval(()=>{
+            const id = initializedUser ? userData.id : getRandomNumber(10);
+            fetchData(id);
+        }, 310000);
+
+        return()=>{
+            clearInterval(interval);
+        }
+
+    }, [initializedUser, userData.id])
     
 
      

@@ -33,7 +33,7 @@ const homeSchema= new mongoose.Schema({
     },
     idUltimoSorteo:{
         type:mongoose.Schema.Types.ObjectId,
-        ref:'Home',
+        ref:'Sorteo',
         required:true
     }
 

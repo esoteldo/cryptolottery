@@ -1,5 +1,6 @@
 
 import { useGetPrices } from '../../context/getPricesContext';
+import { useGetTelegramData } from '../../context/getTelegramDataContext';
 import './styles.css';
 import HeroCrypto from "../../assets/images/hero-crypto.jpg";
 import {
@@ -38,10 +39,12 @@ import {
 
 const ShareModal = () => {
 
-    const shareUrl = "https://cryptolottery.app/ref/USER123XYZ";
-  const title = "CriptoLottery - Win crypto prizes!";
+    const { userData, initializedUser } = useGetTelegramData();
+    const userId = initializedUser ? userData.id : '';
+    const shareUrl = `https://t.me/cryptolotteryappbot/CryptoLottery/${userId}`;
+    const title = "CryptoLottery - Win crypto prizes!";
 
-    const { shareModal,setShareModal } = useGetPrices();
+    const { shareModal, setShareModal } = useGetPrices();
 
   return (
     <>
