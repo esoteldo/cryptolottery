@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import { Link } from "react-router";
 import { useGetPrices } from "../../context/getPricesContext";
 import { useGetTelegramData } from "../../context/getTelegramDataContext";
 import { useTonConnect } from "../../hooks/useTonConnect";
@@ -20,6 +21,7 @@ const QuickBuy = () => {
     const [tickets, setTickets] = useState([]);
     const [buying, setBuying] = useState(false);
     const [buyResult, setBuyResult] = useState(null);
+    const [termsAccepted, setTermsAccepted] = useState(false);
 
     const ticketPrices = [1, 2, 5, 10, 20];
 
@@ -127,12 +129,30 @@ const QuickBuy = () => {
 
                 <button
                     onClick={handleBuy}
-                    disabled={buying}
-                    className="buy-button w-full py-4 rounded-lg text-white font-bold text-lg orbitron pulse-glow disabled:opacity-50"
+                    disabled={buying || (connected && !termsAccepted)}
+                    className="buy-button w-full py-4 rounded-lg text-white font-bold text-lg orbitron pulse-glow disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                     {buying ? 'PROCESSING...' :
                         connected ? 'BUY TICKETS NOW' : 'CONNECT WALLET'}
                 </button>
+
+                <label className="flex items-start gap-2 text-xs text-gray-300 cursor-pointer select-none">
+                    <input
+                        type="checkbox"
+                        checked={termsAccepted}
+                        onChange={(e) => setTermsAccepted(e.target.checked)}
+                        className="mt-0.5 w-4 h-4 accent-orange-500 cursor-pointer"
+                    />
+                    <span>
+                        I accept the{' '}
+                        <Link
+                            to="/terms-conditions"
+                            className="text-orange-400 hover:text-orange-300 underline"
+                        >
+                            Terms and Conditions
+                        </Link>
+                    </span>
+                </label>
             </div>
         </div>
     )
