@@ -2,10 +2,11 @@ import './styles.css';
 import LogoBitcoin from '../../assets/images/bitcoin-btc-logo.svg';
 import LogoEthereum from '../../assets/images/ethereum-eth-logo.svg';
 import { useEffect, useState } from 'react';
-import { getWinners, searchWinners } from '../../api/data';
+import { getProcessedSorteos, searchWinners } from '../../api/data';
 
 const Results = () => {
     const [results, setResults] = useState([]);
+    const [mode, setMode] = useState('sorteos'); // 'sorteos' | 'winners'
     const [expandedIndex, setExpandedIndex] = useState(null);
     const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState('');
@@ -14,8 +15,9 @@ const Results = () => {
     const fetchResults = async () => {
         try {
             setLoading(true);
-            const res = await getWinners();
-            setResults(res.data.winner || []);
+            const res = await getProcessedSorteos();
+            setResults(res.data.sorteos || []);
+            setMode('sorteos');
         } catch (error) {
             console.error("Error fetching results:", error);
         } finally {
@@ -36,6 +38,7 @@ const Results = () => {
             setLoading(true);
             const res = await searchWinners(searchQuery.trim());
             setResults(res.data.winner || []);
+            setMode('winners');
         } catch (error) {
             console.error("Error searching:", error);
         } finally {
@@ -102,7 +105,7 @@ const Results = () => {
                         <div className="text-gray-400 text-center py-8">No results found.</div>
                     ) : (
                         results.map((result, index) => {
-                            const sorteo = result.idSorteo;
+                            const sorteo = mode === 'sorteos' ? result : result.idSorteo;
                             const expanded = expandedIndex === index;
                             const btcDigits = sorteo?.precioBitcoin ? sorteo.precioBitcoin.toString().slice(-2) : '--';
                             const ethDigits = sorteo?.precioEthereum ? sorteo.precioEthereum.toString().slice(-2) : '--';
@@ -135,10 +138,17 @@ const Results = () => {
                                                     <div className="text-gray-400">Prize per Winner</div>
                                                     <div className="font-bold text-green-400">{sorteo?.montoGanadoPorUsuario || '0'} TON</div>
                                                 </div>
-                                                <div>
-                                                    <div className="text-gray-400">Winner Wallet</div>
-                                                    <div className="font-bold text-sm">{result.idUser?.wallet ? result.idUser.wallet.slice(0, 8) + '...' : '-'}</div>
-                                                </div>
+                                                {mode === 'winners' ? (
+                                                    <div>
+                                                        <div className="text-gray-400">Winner Wallet</div>
+                                                        <div className="font-bold text-sm">{result.idUser?.wallet ? result.idUser.wallet.slice(0, 8) + '...' : '-'}</div>
+                                                    </div>
+                                                ) : (
+                                                    <div>
+                                                        <div className="text-gray-400">Total Prize</div>
+                                                        <div className="font-bold text-green-400">{sorteo?.montoPremio || '0'} TON</div>
+                                                    </div>
+                                                )}
                                             </div>
                                         </div>
                                     </div>

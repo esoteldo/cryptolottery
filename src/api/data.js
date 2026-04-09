@@ -45,6 +45,9 @@ export const getInitData = async (id) => api.get(`/getinitdata/${id}`)
 // Ultimos ganadores
 export const getWinners = async () => api.get(`/winners`)
 
+// Sorteos procesados (cerrados)
+export const getProcessedSorteos = async () => api.get(`/sorteos`)
+
 // Buscar ganadores por wallet
 export const searchWinners = async (wallet) => api.get(`/searchwinners?wallet=${wallet}`)
 
