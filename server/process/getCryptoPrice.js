@@ -1,6 +1,3 @@
-import mongoose from 'mongoose';
-import Home from '../models/home.model.js';
-import { connectDB } from "./db.js";
 import { API_KEY_CRYPTOCOMPARE } from '../src/config.js';
 
 

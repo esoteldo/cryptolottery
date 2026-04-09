@@ -12,8 +12,5 @@ export const connectDB= async ()=>{
 
     } catch(err){
         console.log(err)
-    }finally {
-    // Ensures that the client will close when you finish/error
-    await mongoose.disconnect;
-  }
+    }
 }

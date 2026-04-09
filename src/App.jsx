@@ -16,7 +16,8 @@ function App() {
     <>
     <Header />
       <Routes>
-        <Route path="/:idReferal" element={<Main />} />
+        <Route path="/" element={<Main />} />
+        <Route path="/ref/:idReferal" element={<Main />} />
         <Route path="/tickets" element={<Tickets />} />
         <Route path="/results" element={<Results />} />
         <Route path="/referral" element={<Refer />} />

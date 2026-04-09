@@ -101,7 +101,7 @@
             color: var(--pure-white);
             transition: all 0.3s ease;
         }
-        
+
         .input-field:focus {
             border-color: var(--accent-orange);
             box-shadow: 0 0 10px rgba(255, 107, 53, 0.3);
@@ -109,7 +109,12 @@
         }
 
         .input-field:hover {
-            color: var(--neutral-gray);
+            border-color: var(--accent-orange);
+        }
+
+        select.input-field option {
+            background: #1a1a2e;
+            color: #ffffff;
         }
         
        /*  .trend-up {

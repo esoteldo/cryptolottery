@@ -13,7 +13,7 @@ const LOTTERY_WALLET = import.meta.env.VITE_LOTTERY_WALLET || "0QAjBeSS-O4t5gr5h
 const QuickBuy = () => {
     const { prices } = useGetPrices();
     const { userData } = useGetTelegramData();
-    const { connected, walletAddress, sendTransaction, connectWallet } = useTonConnect();
+    const { connected, walletAddress, sendTransaction, connectWallet, disconnectWallet } = useTonConnect();
 
     const selectValue = useRef(1);
     const [ticketValue, setTicketValue] = useState(1);
@@ -98,8 +98,16 @@ const QuickBuy = () => {
 
                 {/* Wallet status */}
                 {connected && walletAddress && (
-                    <div className="text-xs text-gray-400 text-center">
-                        Wallet: {walletAddress.slice(0, 6)}...{walletAddress.slice(-4)}
+                    <div className="text-xs text-gray-400 text-center flex items-center justify-center gap-2">
+                        <span>Wallet: {walletAddress.slice(0, 6)}...{walletAddress.slice(-4)}</span>
+                        <button
+                            type="button"
+                            onClick={disconnectWallet}
+                            className="px-2 py-1 rounded border border-red-500 text-red-400 hover:bg-red-500 hover:text-white transition-colors"
+                            title="Disconnect wallet"
+                        >
+                            Disconnect
+                        </button>
                     </div>
                 )}
 

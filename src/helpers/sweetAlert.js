@@ -52,16 +52,17 @@ export const errorInitData = (error) => {
       title: 'Registro Fallido',
       html:`<ul>`+
         error.error.map((value)=>{
-          return `<li>${value}</li>`
+          const safe = String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+          return `<li>${safe}</li>`
         })+`</ul>` ,
-        timer: 4000                      
+        timer: 4000
     })
     }else{
       Swal.fire({
         icon: 'error',
         title: 'Registro Fallido',
         html:`Error De Registro `,
-          timer: 4000                      
+          timer: 4000
       })
 
     }

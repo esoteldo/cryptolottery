@@ -1,126 +1,159 @@
 import './styles.css';
 import LogoBitcoin from '../../assets/images/bitcoin-btc-logo.svg';
 import LogoEthereum from '../../assets/images/ethereum-eth-logo.svg';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { getWinners, searchWinners } from '../../api/data';
 
 const Results = () => {
+    const [results, setResults] = useState([]);
+    const [expandedIndex, setExpandedIndex] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [activeFilter, setActiveFilter] = useState('all');
 
-
-    const [jackpot, setJackpot] = useState(true);
-    const [expanded, setExpanded] = useState(false);
-
-    const toggleCard = () => {
-        setExpanded(!expanded);
+    const fetchResults = async () => {
+        try {
+            setLoading(true);
+            const res = await getWinners();
+            setResults(res.data.winner || []);
+        } catch (error) {
+            console.error("Error fetching results:", error);
+        } finally {
+            setLoading(false);
+        }
     };
 
-  return (
-    <>
-       {/* Header */}
-    <header className="p-4 relative z-10 mt-18">
-        <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-                {/* <a href="index.html" className="text-white hover:text-orange-400 transition-colors">
-                    ← Back
-                </a> */}
-                <h1 className="text-xl font-bold orbitron">Results & Winners</h1>
-            </div>
-            <div className="text-sm text-gray-300">
-                <span id="total-draws">156</span> draws
-            </div>
-        </div>
-    </header>
+    useEffect(() => {
+        fetchResults();
+    }, []);
 
-     {/* Search and Filters  */}
-    <div className="p-4 pb-2" >
-        <div className="glass-card rounded-2xl p-4 mb-4">
-            <div className="space-y-4">
-                <div>
-                    <input type="text" placeholder="Search by numbers (e.g., 42,23)" className="search-input w-full px-4 py-3 rounded-lg" id="search-input" />
-                </div>
-                <div className="flex space-x-2 flex-wrap overflow-x-hidden pb-2" id='search-box'>
-                    <button className="filter-button active px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap mb-2" data-filter="all">All Results</button>
-                    <button className="filter-button px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap mb-2" data-filter="today">Today</button>
-                    <button className="filter-button px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap mb-2" data-filter="week">This Week</button>
-                    <button className="filter-button px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap mb-2" data-filter="month">This Month</button>
-                    <button className="filter-button px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap mb-2" data-filter="jackpot">Jackpots</button>
-                </div>
-            </div>
-        </div>
-    </div>
+    const handleSearch = async () => {
+        if (!searchQuery.trim()) {
+            fetchResults();
+            return;
+        }
+        try {
+            setLoading(true);
+            const res = await searchWinners(searchQuery.trim());
+            setResults(res.data.winner || []);
+        } catch (error) {
+            console.error("Error searching:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
-    {/*  Statistics Dashboard  */}
-    <div className="p-4 pb-2">
-        <div className="glass-card rounded-2xl p-4 mb-4">
-            <h3 className="text-lg font-bold mb-4 orbitron">Lottery Statistics</h3>
-            <div className="grid grid-cols-2 gap-4 mb-4">
-                <div className="stat-card">
-                    <div className="stat-value orbitron" id="total-prizes">$2.8M</div>
-                    <div className="text-sm text-gray-400">Total Prizes</div>
-                </div>
-                <div className="stat-card">
-                    <div className="stat-value orbitron" id="total-winners">1,247</div>
-                    <div className="text-sm text-gray-400">Winners</div>
-                </div>
-            </div>
-           {/*  <div className="chart-container" id="frequency-chart"></div> */}
-        </div>
-    </div>
+    const toggleCard = (index) => {
+        setExpandedIndex(expandedIndex === index ? null : index);
+    };
 
-     {/* Results List  */}
-    <div className="p-4 pt-0">
-        <div className="space-y-4" id="results-container">
-             {/* Results will be populated by JavaScript */} 
-                <div className="result-card glass-card rounded-2xl p-4" onClick={toggleCard}>
-                        <div className="flex justify-between items-start mb-3">
-                            <div>
-                                <div className="font-bold text-lg orbitron">Draw #{'11'}</div>
-                                <div className="text-sm text-gray-400">{'11/3/2025'}</div>
-                            </div>
-                            <div className="text-right">
-                                <div className="text-lg font-bold text-green-400">${'3000'}</div>
-                                <div className="text-xs text-gray-400">{'2'} winners</div>
-                            </div>
+    return (
+        <>
+            {/* Header */}
+            <header className="p-4 relative z-10 mt-18">
+                <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-3">
+                        <h1 className="text-xl font-bold orbitron">Results & Winners</h1>
+                    </div>
+                    <div className="text-sm text-gray-300">
+                        <span id="total-draws">{results.length}</span> results
+                    </div>
+                </div>
+            </header>
+
+            {/* Search and Filters  */}
+            <div className="p-4 pb-2">
+                <div className="glass-card rounded-2xl p-4 mb-4">
+                    <div className="space-y-4">
+                        <div>
+                            <input
+                                type="text"
+                                placeholder="Search by wallet address"
+                                className="search-input w-full px-4 py-3 rounded-lg"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+                            />
                         </div>
-                        
-                        <div className="flex justify-between items-center mb-3">
-                            <div className="flex items-center space-x-2">
-                                <span className="text-sm text-gray-400">Winning Numbers:</span>
-                                <span className="winning-number bitcoin-number"><div className='flex space-x-1'><img src={LogoBitcoin} alt="Bitcoin" className="w-5 h-5"/><div>{'42'}</div></div></span>
-                                <span className="winning-number ethereum-number"><div className='flex space-x-1'><img src={LogoEthereum} alt="Ethereum" className="w-5 h-5"/><div>{'82'}</div></div></span>
-                            </div>
-                            {jackpot ? (<div className="bg-yellow-500 text-black px-2 py-1 rounded text-xs font-bold">JACKPOT</div>) : ''}
+                        <div className="flex space-x-2 flex-wrap overflow-x-hidden pb-2" id='search-box'>
+                            {['all', 'today', 'week', 'month', 'jackpot'].map((filter) => (
+                                <button
+                                    key={filter}
+                                    className={`filter-button ${activeFilter === filter ? 'active' : ''} px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap mb-2`}
+                                    onClick={() => {
+                                        setActiveFilter(filter);
+                                        if (filter === 'all') fetchResults();
+                                    }}
+                                >
+                                    {filter === 'all' ? 'All Results' : filter === 'today' ? 'Today' : filter === 'week' ? 'This Week' : filter === 'month' ? 'This Month' : 'Jackpots'}
+                                </button>
+                            ))}
                         </div>
-                        
-                        <div className={`winner-details ${expanded ? 'expanded' : ''}`}>
-                            <div className="border-t border-gray-700 pt-3 mt-3">
-                                <div className="grid grid-cols-2 gap-4 text-sm">
-                                    <div>
-                                        <div className="text-gray-400">Total Prizes Distributed</div>
-                                        <div className="font-bold text-green-400">${"Total prizes"}</div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Results List  */}
+            <div className="p-4 pt-0">
+                <div className="space-y-4" id="results-container">
+                    {loading ? (
+                        <div className="text-gray-400 text-center py-8">Loading results...</div>
+                    ) : results.length === 0 ? (
+                        <div className="text-gray-400 text-center py-8">No results found.</div>
+                    ) : (
+                        results.map((result, index) => {
+                            const sorteo = result.idSorteo;
+                            const expanded = expandedIndex === index;
+                            const btcDigits = sorteo?.precioBitcoin ? sorteo.precioBitcoin.toString().slice(-2) : '--';
+                            const ethDigits = sorteo?.precioEthereum ? sorteo.precioEthereum.toString().slice(-2) : '--';
+
+                            return (
+                                <div key={result._id || index} className="result-card glass-card rounded-2xl p-4" onClick={() => toggleCard(index)}>
+                                    <div className="flex justify-between items-start mb-3">
+                                        <div>
+                                            <div className="font-bold text-lg orbitron">Draw #{sorteo?.numeroSorteo || '-'}</div>
+                                            <div className="text-sm text-gray-400">{sorteo?.fecha || ''}</div>
+                                        </div>
+                                        <div className="text-right">
+                                            <div className="text-lg font-bold text-green-400">{sorteo?.montoPremio || '0'} TON</div>
+                                            <div className="text-xs text-gray-400">{sorteo?.ganadores || 0} winners</div>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <div className="text-gray-400">Average Prize per Winner</div>
-                                        <div className="font-bold">${'Promedio por Ganador'}</div>
+
+                                    <div className="flex justify-between items-center mb-3">
+                                        <div className="flex items-center space-x-2">
+                                            <span className="text-sm text-gray-400">Winning Numbers:</span>
+                                            <span className="winning-number bitcoin-number"><div className='flex space-x-1'><img src={LogoBitcoin} alt="Bitcoin" className="w-5 h-5" /><div>{btcDigits}</div></div></span>
+                                            <span className="winning-number ethereum-number"><div className='flex space-x-1'><img src={LogoEthereum} alt="Ethereum" className="w-5 h-5" /><div>{ethDigits}</div></div></span>
+                                        </div>
+                                    </div>
+
+                                    <div className={`winner-details ${expanded ? 'expanded' : ''}`}>
+                                        <div className="border-t border-gray-700 pt-3 mt-3">
+                                            <div className="grid grid-cols-2 gap-4 text-sm">
+                                                <div>
+                                                    <div className="text-gray-400">Prize per Winner</div>
+                                                    <div className="font-bold text-green-400">{sorteo?.montoGanadoPorUsuario || '0'} TON</div>
+                                                </div>
+                                                <div>
+                                                    <div className="text-gray-400">Winner Wallet</div>
+                                                    <div className="font-bold text-sm">{result.idUser?.wallet ? result.idUser.wallet.slice(0, 8) + '...' : '-'}</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="text-center mt-2">
+                                        <div className="text-xs text-gray-400">Tap to {expanded ? 'collapse' : 'expand'}</div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                        
-                        <div className="text-center mt-2">
-                            <div className="text-xs text-gray-400">Tap to {expanded ? 'collapse' : 'expand'}</div>
-                        </div>
-                    </div> 
-        </div>
-        
-         {/* Load More Button */}
-        <div className="text-center mt-6">
-            <button className="bg-white bg-opacity-10 hover:bg-opacity-20 px-6 py-3 rounded-lg font-medium transition-all" id="load-more">
-                Load More Results
-            </button>
-        </div>
-    </div>
-    </>
-  )
+                            );
+                        })
+                    )}
+                </div>
+            </div>
+        </>
+    )
 }
 
 export default Results
