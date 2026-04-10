@@ -49,7 +49,7 @@ const Refer = () => {
     };
     const tier = getTier();
 
-    const textToCopy = `https://t.me/cryptolotteryappbot/CryptoLottery/${initializedUser ? userData.id : referalcode}`;
+    const textToCopy = `https://t.me/CriptoLotteryAppBot/CriptoLottery/${initializedUser ? userData.id : referalcode}`;
 
     return (
         <div className="min-h-screen relative">
