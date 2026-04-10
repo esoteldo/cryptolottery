@@ -159,7 +159,7 @@ const Results = () => {
                                             <div className="text-sm text-gray-400">{sorteo?.fecha || ''}</div>
                                         </div>
                                         <div className="text-right">
-                                            <div className="text-lg font-bold text-green-400">{sorteo?.montoPremio || '0'} TON</div>
+                                            <div className="text-lg font-bold text-green-400">{Number(sorteo?.montoPremio || 0).toFixed(2)} TON</div>
                                             <div className="text-xs text-gray-400">{sorteo?.ganadores || 0} winners</div>
                                         </div>
                                     </div>
@@ -187,7 +187,7 @@ const Results = () => {
                                                 ) : (
                                                     <div>
                                                         <div className="text-gray-400">Total Prize</div>
-                                                        <div className="font-bold text-green-400">{sorteo?.montoPremio || '0'} TON</div>
+                                                        <div className="font-bold text-green-400">{Number(sorteo?.montoPremio || 0).toFixed(2)} TON</div>
                                                     </div>
                                                 )}
                                             </div>
