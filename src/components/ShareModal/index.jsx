@@ -4,34 +4,21 @@ import { useGetTelegramData } from '../../context/getTelegramDataContext';
 import './styles.css';
 import HeroCrypto from "../../assets/images/hero-crypto.jpg";
 import {
-  EmailIcon,
-  EmailShareButton,
   FacebookIcon,
   FacebookShareButton,
-  /* FacebookShareCount, */
   GabIcon,
   GabShareButton,
   LinkedinIcon,
   LinkedinShareButton,
-  LivejournalIcon,
-  LivejournalShareButton,
-  MailruIcon,
-  MailruShareButton,
   OKIcon,
   OKShareButton,
   RedditIcon,
   RedditShareButton,
   TelegramIcon,
   TelegramShareButton,
-  TumblrIcon,
-  TumblrShareButton,
   TwitterShareButton,
-  ViberIcon,
-  ViberShareButton,
   VKIcon,
   VKShareButton,
-  WeiboIcon,
-  WeiboShareButton,
   WhatsappIcon,
   WhatsappShareButton,
   XIcon,
@@ -167,75 +154,6 @@ const ShareModal = () => {
                        </GabShareButton>
                      </div>
 
-                     <div className="Demo__some-network">
-                       <TumblrShareButton
-                         url={shareUrl}
-                         title={title}
-                         className="Demo__some-network__share-button"
-                       >
-                         <TumblrIcon size={32} round />
-                       </TumblrShareButton>
-
-                       {/* <div>
-                         <p className="Demo__some-network__share-count">
-                           Tumblr
-                         </p>
-                       </div>  */}
-                     </div>
-
-                     <div className="Demo__some-network">
-                       <LivejournalShareButton
-                         url={shareUrl}
-                         title={title}
-                         description={shareUrl}
-                         className="Demo__some-network__share-button"
-                       >
-                         <LivejournalIcon size={32} round />
-                       </LivejournalShareButton>
-                     </div>
-
-                     <div className="Demo__some-network">
-                       <MailruShareButton
-                         url={shareUrl}
-                         title={title}
-                         className="Demo__some-network__share-button"
-                       >
-                         <MailruIcon size={32} round />
-                       </MailruShareButton>
-                     </div>
-
-                     <div className="Demo__some-network">
-                       <EmailShareButton
-                         url={shareUrl}
-                         subject={title}
-                         body="body"
-                         className="Demo__some-network__share-button"
-                       >
-                         <EmailIcon size={32} round />
-                       </EmailShareButton>
-                     </div>
-
-                     <div className="Demo__some-network">
-                       <ViberShareButton
-                         url={shareUrl}
-                         title={title}
-                         className="Demo__some-network__share-button"
-                       >
-                         <ViberIcon size={32} round />
-                       </ViberShareButton>
-                     </div>
-
-
-
-                     <div className="Demo__some-network">
-                       <WeiboShareButton
-                         url={shareUrl}
-                         title={title}
-                         className="Demo__some-network__share-button"
-                       >
-                         <WeiboIcon size={32} round />
-                       </WeiboShareButton>
-                     </div>
 
 
                      
