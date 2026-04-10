@@ -41,7 +41,7 @@ const ShareModal = () => {
 
     const { userData, initializedUser } = useGetTelegramData();
     const userId = initializedUser ? userData.id : '';
-    const shareUrl = `https://t.me/cryptolotteryappbot/CryptoLottery/${userId}`;
+    const shareUrl = `https://t.me/CriptoLotteryAppBot?start=${userId}`;
     const title = "CryptoLottery - Win crypto prizes!";
 
     const { shareModal, setShareModal } = useGetPrices();
