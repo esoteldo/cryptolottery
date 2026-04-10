@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { getProcessedSorteos, searchWinners } from '../../api/data';
 
 const Results = () => {
+    const [allResults, setAllResults] = useState([]);
     const [results, setResults] = useState([]);
     const [mode, setMode] = useState('sorteos'); // 'sorteos' | 'winners'
     const [expandedIndex, setExpandedIndex] = useState(null);
@@ -12,11 +13,45 @@ const Results = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [activeFilter, setActiveFilter] = useState('all');
 
+    const parseFecha = (fecha) => {
+        if (!fecha) return null;
+        // formato: "2026-04-09-20:00:00" → "2026-04-09T20:00:00Z"
+        const parts = fecha.match(/^(\d{4}-\d{2}-\d{2})-(.+)$/);
+        if (!parts) return null;
+        return new Date(`${parts[1]}T${parts[2]}Z`);
+    };
+
+    const applyFilter = (data, filter) => {
+        if (filter === 'all') return data;
+        if (filter === 'jackpot') return data.filter(s => s.ganadores > 0);
+
+        const now = new Date();
+        const startOfDay = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+        let cutoff;
+
+        if (filter === 'today') {
+            cutoff = startOfDay;
+        } else if (filter === 'week') {
+            cutoff = new Date(startOfDay);
+            cutoff.setUTCDate(cutoff.getUTCDate() - 7);
+        } else if (filter === 'month') {
+            cutoff = new Date(startOfDay);
+            cutoff.setUTCMonth(cutoff.getUTCMonth() - 1);
+        }
+
+        return data.filter(s => {
+            const d = parseFecha(s.fecha);
+            return d && d >= cutoff;
+        });
+    };
+
     const fetchResults = async () => {
         try {
             setLoading(true);
             const res = await getProcessedSorteos();
-            setResults(res.data.sorteos || []);
+            const sorteos = res.data.sorteos || [];
+            setAllResults(sorteos);
+            setResults(applyFilter(sorteos, activeFilter));
             setMode('sorteos');
         } catch (error) {
             console.error("Error fetching results:", error);
@@ -85,7 +120,8 @@ const Results = () => {
                                     className={`filter-button ${activeFilter === filter ? 'active' : ''} px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap mb-2`}
                                     onClick={() => {
                                         setActiveFilter(filter);
-                                        if (filter === 'all') fetchResults();
+                                        setResults(applyFilter(allResults, filter));
+                                        setMode('sorteos');
                                     }}
                                 >
                                     {filter === 'all' ? 'All Results' : filter === 'today' ? 'Today' : filter === 'week' ? 'This Week' : filter === 'month' ? 'This Month' : 'Jackpots'}
