@@ -2,6 +2,7 @@ import { defineConfig } from 'vite'
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+import fs from 'fs';
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import basicSsl from '@vitejs/plugin-basic-ssl'
@@ -16,6 +17,14 @@ export default defineConfig({
   plugins: [react(),
   tailwindcss(),
   // basicSsl(), // Desactivado para dev local, activar para Telegram Mini App
+  // Copiar index.html como 404.html para SPA routing en GitHub Pages
+  {
+    name: 'copy-404',
+    closeBundle() {
+      const out = path.resolve(__dirname, 'docs');
+      fs.copyFileSync(path.join(out, 'index.html'), path.join(out, '404.html'));
+    }
+  },
   nodePolyfills({
     include: ['buffer', 'crypto', 'stream', 'util', 'process'],
     globals: {
@@ -34,7 +43,7 @@ export default defineConfig({
     },
   },
   build: {
-    outDir: './docs'
+    outDir: './docs',
   },
   
   base: process.env.NODE_ENV === 'production' ? '/cryptolottery/' : '/',
