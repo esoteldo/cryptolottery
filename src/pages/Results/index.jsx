@@ -221,7 +221,7 @@ const Results = () => {
                     )}
 
                     {!loading && results.length > ITEMS_PER_PAGE && (
-                        <div className="glass-card rounded-2xl p-4 flex items-center justify-between">
+                        <div className="glass-card rounded-2xl p-4 mb-24 flex items-center justify-between">
                             <button
                                 className="filter-button px-3 py-2 rounded-lg text-sm font-medium disabled:opacity-40 disabled:cursor-not-allowed"
                                 onClick={() => goToPage(currentPage - 1)}

@@ -127,7 +127,7 @@ const Tickets = () => {
                     )}
 
                     {!loading && tickets.length > ITEMS_PER_PAGE && (
-                        <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-700">
+                        <div className="flex items-center justify-between mt-4 pt-4 mb-24 border-t border-gray-700">
                             <button
                                 className="filter-button px-3 py-2 rounded-lg text-sm font-medium disabled:opacity-40 disabled:cursor-not-allowed"
                                 onClick={() => goToPage(currentPage - 1)}
