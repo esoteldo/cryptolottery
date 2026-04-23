@@ -13,6 +13,8 @@ const Tickets = () => {
     const [tickets, setTickets] = useState([]);
     const [expandedIndex, setExpandedIndex] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [currentPage, setCurrentPage] = useState(1);
+    const ITEMS_PER_PAGE = 5;
 
     useEffect(() => {
         const fetchTickets = async () => {
@@ -29,6 +31,19 @@ const Tickets = () => {
         };
         fetchTickets();
     }, [walletAddress]);
+
+    const totalPages = Math.max(1, Math.ceil(tickets.length / ITEMS_PER_PAGE));
+    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+    const paginatedTickets = tickets.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+
+    useEffect(() => {
+        if (currentPage > totalPages) setCurrentPage(totalPages);
+    }, [totalPages, currentPage]);
+
+    const goToPage = (page) => {
+        setCurrentPage(page);
+        setExpandedIndex(null);
+    };
 
     const toggleCard = (index) => {
         setExpandedIndex(expandedIndex === index ? null : index);
@@ -58,7 +73,7 @@ const Tickets = () => {
                     ) : tickets.length === 0 ? (
                         <div className="text-gray-400 text-center py-8">No tickets yet. Buy your first ticket!</div>
                     ) : (
-                        tickets.map((ticket, index) => {
+                        paginatedTickets.map((ticket, index) => {
                             const sorteo = ticket.idSorteo;
                             const btcDigits = ticket.valueTicket ? ticket.valueTicket.slice(0, 2) : '--';
                             const ethDigits = ticket.valueTicket ? ticket.valueTicket.slice(2, 4) : '--';
@@ -109,6 +124,36 @@ const Tickets = () => {
                                 </div>
                             );
                         })
+                    )}
+
+                    {!loading && tickets.length > ITEMS_PER_PAGE && (
+                        <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-700">
+                            <button
+                                className="filter-button px-3 py-2 rounded-lg text-sm font-medium disabled:opacity-40 disabled:cursor-not-allowed"
+                                onClick={() => goToPage(currentPage - 1)}
+                                disabled={currentPage === 1}
+                            >
+                                Prev
+                            </button>
+                            <div className="flex items-center space-x-2">
+                                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                                    <button
+                                        key={page}
+                                        className={`filter-button ${currentPage === page ? 'active' : ''} w-9 h-9 rounded-lg text-sm font-medium`}
+                                        onClick={() => goToPage(page)}
+                                    >
+                                        {page}
+                                    </button>
+                                ))}
+                            </div>
+                            <button
+                                className="filter-button px-3 py-2 rounded-lg text-sm font-medium disabled:opacity-40 disabled:cursor-not-allowed"
+                                onClick={() => goToPage(currentPage + 1)}
+                                disabled={currentPage === totalPages}
+                            >
+                                Next
+                            </button>
+                        </div>
                     )}
                 </div>
             </div>

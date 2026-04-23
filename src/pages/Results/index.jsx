@@ -12,6 +12,8 @@ const Results = () => {
     const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState('');
     const [activeFilter, setActiveFilter] = useState('all');
+    const [currentPage, setCurrentPage] = useState(1);
+    const ITEMS_PER_PAGE = 5;
 
     const parseFecha = (fecha) => {
         if (!fecha) return null;
@@ -53,6 +55,7 @@ const Results = () => {
             setAllResults(sorteos);
             setResults(applyFilter(sorteos, activeFilter));
             setMode('sorteos');
+            setCurrentPage(1);
         } catch (error) {
             console.error("Error fetching results:", error);
         } finally {
@@ -74,11 +77,25 @@ const Results = () => {
             const res = await searchWinners(searchQuery.trim());
             setResults(res.data.winner || []);
             setMode('winners');
+            setCurrentPage(1);
         } catch (error) {
             console.error("Error searching:", error);
         } finally {
             setLoading(false);
         }
+    };
+
+    const totalPages = Math.max(1, Math.ceil(results.length / ITEMS_PER_PAGE));
+    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+    const paginatedResults = results.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+
+    useEffect(() => {
+        if (currentPage > totalPages) setCurrentPage(totalPages);
+    }, [totalPages, currentPage]);
+
+    const goToPage = (page) => {
+        setCurrentPage(page);
+        setExpandedIndex(null);
     };
 
     const toggleCard = (index) => {
@@ -122,6 +139,7 @@ const Results = () => {
                                         setActiveFilter(filter);
                                         setResults(applyFilter(allResults, filter));
                                         setMode('sorteos');
+                                        setCurrentPage(1);
                                     }}
                                 >
                                     {filter === 'all' ? 'All Results' : filter === 'today' ? 'Today' : filter === 'week' ? 'This Week' : filter === 'month' ? 'This Month' : 'Jackpots'}
@@ -140,7 +158,7 @@ const Results = () => {
                     ) : results.length === 0 ? (
                         <div className="text-gray-400 text-center py-8">No results found.</div>
                     ) : (
-                        results.map((result, index) => {
+                        paginatedResults.map((result, index) => {
                             const sorteo = mode === 'sorteos' ? result : result.idSorteo;
                             const expanded = expandedIndex === index;
                             const firstTwoDecimals = (price) => {
@@ -200,6 +218,36 @@ const Results = () => {
                                 </div>
                             );
                         })
+                    )}
+
+                    {!loading && results.length > ITEMS_PER_PAGE && (
+                        <div className="glass-card rounded-2xl p-4 flex items-center justify-between">
+                            <button
+                                className="filter-button px-3 py-2 rounded-lg text-sm font-medium disabled:opacity-40 disabled:cursor-not-allowed"
+                                onClick={() => goToPage(currentPage - 1)}
+                                disabled={currentPage === 1}
+                            >
+                                Prev
+                            </button>
+                            <div className="flex items-center space-x-2">
+                                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                                    <button
+                                        key={page}
+                                        className={`filter-button ${currentPage === page ? 'active' : ''} w-9 h-9 rounded-lg text-sm font-medium`}
+                                        onClick={() => goToPage(page)}
+                                    >
+                                        {page}
+                                    </button>
+                                ))}
+                            </div>
+                            <button
+                                className="filter-button px-3 py-2 rounded-lg text-sm font-medium disabled:opacity-40 disabled:cursor-not-allowed"
+                                onClick={() => goToPage(currentPage + 1)}
+                                disabled={currentPage === totalPages}
+                            >
+                                Next
+                            </button>
+                        </div>
                     )}
                 </div>
             </div>
