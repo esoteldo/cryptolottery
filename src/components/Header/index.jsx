@@ -43,9 +43,18 @@ const Header = () => {
         <header className="fixed top-7 left-0 right-0 bg-black bg-opacity-30 backdrop-blur-lg border-t border-gray-800 z-50">
             <div className="flex items-center justify-between left-2 right-2 py-2 px-4">
                 <div className="flex items-center space-x-3">
-                    <div className="w-8 h-8 bg-gradient-to-r from-orange-500 to-blue-500 rounded-full flex items-center justify-center">
-                        <span className="text-white font-bold text-lg">B</span>
-                    </div>
+                    <svg viewBox="0 0 40 40" className="w-8 h-8" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="cl-logo-gradient" x1="0" y1="0" x2="1" y2="1">
+                                <stop offset="0%" stopColor="#f97316"/>
+                                <stop offset="100%" stopColor="#3b82f6"/>
+                            </linearGradient>
+                        </defs>
+                        <circle cx="20" cy="20" r="19" fill="url(#cl-logo-gradient)"/>
+                        <circle cx="20" cy="20" r="16" fill="#0d0d0d"/>
+                        <text x="15.25" y="26" textAnchor="middle" dominantBaseline="alphabetic" fontFamily="Orbitron, sans-serif" fontWeight="900" fontSize="18" fill="url(#cl-logo-gradient)">C</text>
+                        <text x="27.25" y="26" textAnchor="middle" dominantBaseline="alphabetic" fontFamily="Orbitron, sans-serif" fontWeight="900" fontSize="11" fill="url(#cl-logo-gradient)">L</text>
+                    </svg>
                     <h1 className="text-xl font-bold orbitron">CryptoLottery</h1>
                 </div>
                 <div className="flex items-center space-x-2">
