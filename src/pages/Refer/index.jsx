@@ -125,8 +125,13 @@ const Refer = () => {
     }
 
     // Solo generamos un link valido cuando hay un id real de Telegram.
+    // Usamos ?startapp= (no ?start=) para que el link abra DIRECTAMENTE la
+    // Mini App pasando el parametro a WebApp.initDataUnsafe.start_param.
+    // ?start= entraria al chat del bot y pediria tocar "Iniciar" antes.
+    // Requiere que el bot tenga una Main Mini App configurada en @BotFather
+    // (Bot Settings -> Configure Mini App).
     const textToCopy = initializedUser && userData?.id
-        ? `https://t.me/CriptoLotteryAppBot?start=${userData.id}`
+        ? `https://t.me/CriptoLotteryAppBot?startapp=${userData.id}`
         : '';
 
     // Mensaje del bloqueo del claim (si aplica)

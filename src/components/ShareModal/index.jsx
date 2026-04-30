@@ -28,7 +28,8 @@ const ShareModal = () => {
 
     const { userData, initializedUser } = useGetTelegramData();
     const userId = initializedUser ? userData.id : '';
-    const shareUrl = `https://t.me/CriptoLotteryAppBot?start=${userId}`;
+    // ?startapp= abre la Mini App directamente; ?start= entra al chat del bot.
+    const shareUrl = `https://t.me/CriptoLotteryAppBot?startapp=${userId}`;
     const title = "CryptoLottery - Win crypto prizes!";
 
     const { shareModal, setShareModal } = useGetPrices();
