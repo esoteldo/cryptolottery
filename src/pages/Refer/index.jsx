@@ -149,68 +149,10 @@ const Refer = () => {
         }
     })();
 
-    // ---- DEBUG TEMPORAL: muestra datos de Telegram WebApp ----
-    // Quitar este bloque cuando termine la prueba de referidos.
-    const tg = typeof window !== 'undefined' ? window.Telegram?.WebApp : null;
-    const debugInfo = {
-        initialized: !!initializedUser,
-        userId: userData?.id ?? '(none)',
-        startParam: tg?.initDataUnsafe?.start_param ?? '(undefined)',
-        platform: tg?.platform ?? '(no tg)',
-        version: tg?.version ?? '(no tg)',
-        hasInitData: !!tg?.initData,
-    };
-
-    // Forzar re-llamar /api/session si tenemos un start_param que aun no se
-    // proceso (caso: usuario abre la app, despues clickea link de referido,
-    // Telegram restaura la sesion sin recargar React).
-    const handleForceReregister = async () => {
-        if (!tg?.initDataUnsafe?.user) {
-            alert('No Telegram user data');
-            return;
-        }
-        try {
-            const u = tg.initDataUnsafe.user;
-            const sp = tg.initDataUnsafe.start_param || null;
-            const { loginOrRegister } = await import('../../api/data');
-            const r = await loginOrRegister({
-                idTelegram: u.id.toString(),
-                languaje: u.language_code || 'en',
-                region: Intl.DateTimeFormat().resolvedOptions().timeZone || 'unknown',
-                idReferal: sp
-            });
-            alert(`Re-register OK. start_param sent: ${sp || '(null)'}`);
-            console.log('Re-register response:', r.data);
-            // Recargar balance
-            window.location.reload();
-        } catch (e) {
-            alert('Re-register failed: ' + (e.response?.data?.message || e.message));
-        }
-    };
-
     return (
         <div className="min-h-screen relative">
 
-            {/* DEBUG BANNER - QUITAR DESPUES DE LA PRUEBA */}
-            <div className="fixed top-2 left-2 right-2 z-[100] bg-yellow-900/90 border border-yellow-500 rounded-lg p-3 text-xs font-mono">
-                <div className="text-yellow-300 font-bold mb-1">🐛 DEBUG (referral test)</div>
-                <div className="text-yellow-100 space-y-0.5">
-                    <div>initialized: <span className="text-white">{String(debugInfo.initialized)}</span></div>
-                    <div>userData.id: <span className="text-white">{String(debugInfo.userId)}</span></div>
-                    <div>start_param: <span className={debugInfo.startParam === '(undefined)' ? 'text-red-400' : 'text-green-400'}>{String(debugInfo.startParam)}</span></div>
-                    <div>platform: <span className="text-white">{String(debugInfo.platform)}</span></div>
-                    <div>tier (from API): <span className="text-white">{tierName} (count: {referralsCount})</span></div>
-                </div>
-                <button
-                    type="button"
-                    onClick={handleForceReregister}
-                    className="mt-2 w-full py-1 bg-yellow-500 text-black rounded text-xs font-bold"
-                >
-                    Force re-register with current start_param
-                </button>
-            </div>
-
-            <div className="p-4 space-y-6 mt-32">
+            <div className="p-4 space-y-6 mt-15">
                 {/* Header */}
                 <header className="p-4 relative z-10">
                     <div className="flex items-center justify-between">
