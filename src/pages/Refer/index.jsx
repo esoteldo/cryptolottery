@@ -5,33 +5,33 @@ import { QRCodeSVG } from 'qrcode.react';
 import { useEffect, useState } from "react";
 import { useGetTelegramData } from "../../context/getTelegramDataContext";
 import { getReferralData } from "../../api/data";
-import getRandomNumber from "../../helpers/getRandomNumber";
 
 const Refer = () => {
     const { userData, initializedUser } = useGetTelegramData();
     const { shareModal, setShareModal } = useGetPrices();
 
-    const [referalcode, setReferalcode] = useState('');
     const [referrals, setReferrals] = useState([]);
     const [totalReferrals, setTotalReferrals] = useState(0);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        if (!initializedUser) {
-            const code = getRandomNumber(10);
-            setReferalcode(code);
+        // Solo consultamos referidos si el usuario esta autenticado en Telegram.
+        // Sin id real no tiene sentido pegarle al endpoint (rompe el JWT y expone
+        // un link compartible roto si usaramos un random).
+        if (!initializedUser || !userData?.id) {
+            setLoading(false);
+            return;
         }
-    }, [initializedUser]);
 
-    useEffect(() => {
         const fetchReferrals = async () => {
             try {
-                const id = initializedUser ? userData.id : referalcode;
-                if (!id) return;
-                const res = await getReferralData(id);
+                const res = await getReferralData(userData.id);
                 const data = res.data.referrals || [];
+                const count = typeof res.data.totalCount === 'number'
+                    ? res.data.totalCount
+                    : data.length;
                 setReferrals(Array.isArray(data) ? data : [data]);
-                setTotalReferrals(Array.isArray(data) ? data.length : 1);
+                setTotalReferrals(count);
             } catch (error) {
                 console.error("Error fetching referral data:", error);
             } finally {
@@ -39,7 +39,7 @@ const Refer = () => {
             }
         };
         fetchReferrals();
-    }, [initializedUser, userData.id, referalcode]);
+    }, [initializedUser, userData?.id]);
 
     // Calcular tier
     const getTier = () => {
@@ -49,7 +49,10 @@ const Refer = () => {
     };
     const tier = getTier();
 
-    const textToCopy = `https://t.me/CriptoLotteryAppBot?start=${initializedUser ? userData.id : referalcode}`;
+    // Solo generamos un link valido cuando hay un id real de Telegram.
+    const textToCopy = initializedUser && userData?.id
+        ? `https://t.me/CriptoLotteryAppBot?start=${userData.id}`
+        : '';
 
     return (
         <div className="min-h-screen relative">
@@ -72,28 +75,40 @@ const Refer = () => {
                     <div className="glass-card rounded-2xl p-6 mb-6 text-center">
                         <h2 className="text-lg font-semibold mb-4 text-gray-300">Your Referral Link</h2>
                         <div className="referral-link rounded-lg p-4 mb-4 text-sm" id="referral-link">
-                            {textToCopy}
+                            {textToCopy || 'Open this app from Telegram to get your link'}
                         </div>
                         <div className="flex space-x-3 mb-4">
-                            <button className="copy-button flex-1 py-3 rounded-lg text-white font-bold" onClick={async () => { await navigator.clipboard.writeText(textToCopy); }}>
+                            <button
+                                className="copy-button flex-1 py-3 rounded-lg text-white font-bold disabled:opacity-50"
+                                disabled={!textToCopy}
+                                onClick={async () => { if (textToCopy) await navigator.clipboard.writeText(textToCopy); }}
+                            >
                                 Copy Link
                             </button>
-                            <button className="share-button px-6 py-3 rounded-lg" onClick={() => { setShareModal(true); }}>
+                            <button
+                                className="share-button px-6 py-3 rounded-lg disabled:opacity-50"
+                                disabled={!textToCopy}
+                                onClick={() => { if (textToCopy) setShareModal(true); }}
+                            >
                                 Share
                             </button>
                         </div>
-                        <div className="qr-container mx-auto">
-                            <QRCodeSVG
-                                value={textToCopy}
-                                size={170}
-                                level="H"
-                                bgColor="#FFFFFF"
-                                fgColor="#000000"
-                            />
-                        </div>
-                        <div className="text-xs text-gray-400 mt-2">
-                            Scan QR code to share instantly
-                        </div>
+                        {textToCopy && (
+                            <>
+                                <div className="qr-container mx-auto">
+                                    <QRCodeSVG
+                                        value={textToCopy}
+                                        size={170}
+                                        level="H"
+                                        bgColor="#FFFFFF"
+                                        fgColor="#000000"
+                                    />
+                                </div>
+                                <div className="text-xs text-gray-400 mt-2">
+                                    Scan QR code to share instantly
+                                </div>
+                            </>
+                        )}
                     </div>
                 </div>
 
