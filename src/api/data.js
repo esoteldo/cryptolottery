@@ -64,8 +64,13 @@ export const createTransaction = async (data) => api.post(`/transaction`, data)
 // Historial de tickets del usuario
 export const getTickets = async (wallet) => api.get(`/gettransaccions/${wallet}`)
 
-// Datos de referidos
+// Datos de referidos (lista de referidos directos)
 export const getReferralData = async (id) => api.get(`/getreferraldata/${id}`)
+
+// Sistema de comisiones de referidos
+export const getReferralBalance = async () => api.get(`/referral/balance`)
+export const getReferralPayouts = async () => api.get(`/referral/payouts`)
+export const claimReferralCommissions = async () => api.post(`/referral/claim`)
 
 // Actualizar wallet del usuario
 export const updateWallet = async (data) => api.put(`/wallet`, data)
