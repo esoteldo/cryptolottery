@@ -39,12 +39,21 @@ export const GetTelegramDataProvider=({children})=>{
                     const user = WebApp.initDataUnsafe.user;
                     const startParam = WebApp.initDataUnsafe.start_param || null;
 
+                    // DEBUG: registrar exactamente que se envia al backend
+                    console.log('[initSession] sending', {
+                        idTelegram: user.id.toString(),
+                        idReferal: startParam,
+                        startParamRaw: WebApp.initDataUnsafe.start_param
+                    });
+
                     const response = await loginOrRegister({
                         idTelegram: user.id.toString(),
                         languaje: user.language_code || 'en',
                         region: Intl.DateTimeFormat().resolvedOptions().timeZone || 'unknown',
                         idReferal: startParam
                     });
+
+                    console.log('[initSession] response:', response.status, response.data?.user);
 
                     if (response.data?.token) {
                         setAuthToken(response.data.token);

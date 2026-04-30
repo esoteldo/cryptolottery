@@ -161,6 +161,33 @@ const Refer = () => {
         hasInitData: !!tg?.initData,
     };
 
+    // Forzar re-llamar /api/session si tenemos un start_param que aun no se
+    // proceso (caso: usuario abre la app, despues clickea link de referido,
+    // Telegram restaura la sesion sin recargar React).
+    const handleForceReregister = async () => {
+        if (!tg?.initDataUnsafe?.user) {
+            alert('No Telegram user data');
+            return;
+        }
+        try {
+            const u = tg.initDataUnsafe.user;
+            const sp = tg.initDataUnsafe.start_param || null;
+            const { loginOrRegister } = await import('../../api/data');
+            const r = await loginOrRegister({
+                idTelegram: u.id.toString(),
+                languaje: u.language_code || 'en',
+                region: Intl.DateTimeFormat().resolvedOptions().timeZone || 'unknown',
+                idReferal: sp
+            });
+            alert(`Re-register OK. start_param sent: ${sp || '(null)'}`);
+            console.log('Re-register response:', r.data);
+            // Recargar balance
+            window.location.reload();
+        } catch (e) {
+            alert('Re-register failed: ' + (e.response?.data?.message || e.message));
+        }
+    };
+
     return (
         <div className="min-h-screen relative">
 
@@ -173,8 +200,14 @@ const Refer = () => {
                     <div>start_param: <span className={debugInfo.startParam === '(undefined)' ? 'text-red-400' : 'text-green-400'}>{String(debugInfo.startParam)}</span></div>
                     <div>platform: <span className="text-white">{String(debugInfo.platform)}</span></div>
                     <div>tier (from API): <span className="text-white">{tierName} (count: {referralsCount})</span></div>
-                    <div>idReferal in user: <span className="text-white">{balance ? '(see Network tab)' : '(loading...)'}</span></div>
                 </div>
+                <button
+                    type="button"
+                    onClick={handleForceReregister}
+                    className="mt-2 w-full py-1 bg-yellow-500 text-black rounded text-xs font-bold"
+                >
+                    Force re-register with current start_param
+                </button>
             </div>
 
             <div className="p-4 space-y-6 mt-32">
