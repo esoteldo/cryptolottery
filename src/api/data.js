@@ -74,3 +74,11 @@ export const claimReferralCommissions = async () => api.post(`/referral/claim`)
 
 // Actualizar wallet del usuario
 export const updateWallet = async (data) => api.put(`/wallet`, data)
+
+// --- Endpoints de admin (requieren JWT + ser Admin con wallet matching) ---
+//   Si el usuario no es admin, devuelven 403 y los componentes silencian.
+export const getAdminPendingApprovals = async () => api.get(`/admin/pending-approvals`)
+export const approveWinnerPayout = async (payoutId) =>
+    api.post(`/admin/approve/${payoutId}`)
+export const rejectWinnerPayout = async (payoutId, reason) =>
+    api.post(`/admin/reject/${payoutId}`, { reason })

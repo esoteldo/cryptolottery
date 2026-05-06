@@ -8,6 +8,7 @@ import TermsConditions from "./pages/TermsConditions.jsx";
 import BottonMenu from "./components/BottonMenu/index.jsx";
 import Header from "./components/Header/index.jsx";
 import ShareModal from "./components/ShareModal/index.jsx";
+import AdminApprovals from "./components/AdminApprovals/index.jsx";
 
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
         <Route path="*" element={<Main />} />
       </Routes>
       <BottonMenu />
+      <AdminApprovals />
     </>
   )
 }
