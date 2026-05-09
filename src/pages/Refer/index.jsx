@@ -87,7 +87,7 @@ const Refer = () => {
             const res = await claimReferralCommissions();
             setClaimMessage({
                 type: 'ok',
-                text: `Claim accepted. ${formatTon(res.data?.payout?.netAmount)} TON will arrive shortly.`
+                text: `Claim accepted. ${formatTon(res.data?.payout?.netAmount)} TON will arrive in ~1 hour.`
             });
             await reloadBalance();
         } catch (error) {
@@ -280,9 +280,14 @@ const Refer = () => {
                                         : `Claim ${formatTon(availableBalance)} TON`}
                             </button>
                             {canClaim && (
-                                <div className="text-xs text-gray-400 mt-2 text-center">
-                                    Network fee: {formatTon(networkFee)} TON deducted from your balance
-                                </div>
+                                <>
+                                    <div className="text-xs text-gray-400 mt-2 text-center">
+                                        Network fee: {formatTon(networkFee)} TON deducted from your balance
+                                    </div>
+                                    <div className="text-xs text-gray-500 mt-1 text-center italic">
+                                        Estimated arrival: ~1 hour after claim
+                                    </div>
+                                </>
                             )}
                             {blockedMessage && (
                                 <div className="text-xs text-yellow-400 mt-2 text-center">

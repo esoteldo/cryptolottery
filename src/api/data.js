@@ -77,8 +77,26 @@ export const updateWallet = async (data) => api.put(`/wallet`, data)
 
 // --- Endpoints de admin (requieren JWT + ser Admin con wallet matching) ---
 //   Si el usuario no es admin, devuelven 403 y los componentes silencian.
+//
+// Etapa 5.6: los endpoints SENSIBLES (approve/reject/unsuspend/drain) aceptan
+// un `adminToken` opcional. Si esta presente, sobreescribe el JWT del header
+// con el admin JWT corto (1h, post connect-proof). Si no, usan el JWT regular.
+// Cuando el backend tiene REQUIRE_ADMIN_PROOF=true, los sensibles RECHAZAN
+// requests sin admin token.
+const adminHeader = (adminToken) =>
+    adminToken ? { Authorization: `Bearer ${adminToken}` } : {};
+
 export const getAdminPendingApprovals = async () => api.get(`/admin/pending-approvals`)
-export const approveWinnerPayout = async (payoutId) =>
-    api.post(`/admin/approve/${payoutId}`)
-export const rejectWinnerPayout = async (payoutId, reason) =>
-    api.post(`/admin/reject/${payoutId}`, { reason })
+export const approveWinnerPayout = async (payoutId, adminToken) =>
+    api.post(`/admin/approve/${payoutId}`, {}, { headers: adminHeader(adminToken) })
+export const rejectWinnerPayout = async (payoutId, reason, adminToken) =>
+    api.post(`/admin/reject/${payoutId}`, { reason }, { headers: adminHeader(adminToken) })
+
+// Etapa 5.5/5.6: payouts suspendidos por cap_exceeded -> unsuspend manual
+export const getAdminSuspendedPayouts = async () => api.get(`/admin/payouts/suspended`)
+export const unsuspendWinnerPayout = async (payoutId, adminToken) =>
+    api.post(`/admin/payouts/${payoutId}/unsuspend`, {}, { headers: adminHeader(adminToken) })
+
+// Etapa 5.6: connect-proof (login fuerte de admin)
+export const getProofPayload = async () => api.get(`/admin/proof-payload`)
+export const submitConnectProof = async (data) => api.post(`/admin/connect-proof`, data)
