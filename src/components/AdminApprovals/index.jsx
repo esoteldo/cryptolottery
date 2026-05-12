@@ -289,8 +289,9 @@ const AdminPanel = () => {
         } finally { setWorking(null); }
     };
 
+    // Boton flotante siempre visible si sos admin (aunque no haya badge),
+    // para que puedas operar drains / ver balances / etc. cuando quieras.
     if (!isAdmin) return null;
-    if (totalBadge === 0 && !showModal) return null;
 
     // -------------------- Render helpers --------------------
 
