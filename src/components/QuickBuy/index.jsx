@@ -8,8 +8,10 @@ import { toNano } from "@ton/core";
 import "./styles.css";
 import InputTicket from "./InputTicket";
 
-// Wallet que recibe los pagos (debe coincidir con WALLET_ADDRESS del backend)
-const LOTTERY_WALLET = import.meta.env.VITE_LOTTERY_WALLET || "0QAjBeSS-O4t5gr5hGCjypzo92DMSex793cYFa4XLifDBMrm";
+// Wallet que recibe los pagos (debe coincidir con WALLET_ADDRESS del backend).
+// Etapa 5: cutover a lottery wallet dedicada. La direccion anterior
+// (0QAjBeSS-...) era la wallet unica de Etapas 3-4.
+const LOTTERY_WALLET = import.meta.env.VITE_LOTTERY_WALLET || "0QBigX_0lt-QVRdCzwVq0ZcmWbUTzqLpdnF2Do-VfEct4MLh";
 
 const QuickBuy = () => {
     const { prices } = useGetPrices();
