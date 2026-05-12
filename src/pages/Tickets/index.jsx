@@ -9,7 +9,7 @@ import { useTonConnect } from '../../hooks/useTonConnect';
 
 const Tickets = () => {
     const { userData, initializedUser } = useGetTelegramData();
-    const { walletAddress, connected } = useTonConnect();
+    const { walletAddress, connected, connectionRestored } = useTonConnect();
     const [tickets, setTickets] = useState([]);
     const [expandedIndex, setExpandedIndex] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -17,6 +17,10 @@ const Tickets = () => {
     const ITEMS_PER_PAGE = 5;
 
     useEffect(() => {
+        // Esperar al restore de TonConnect antes de decidir "connected" o no.
+        // Sin esto, durante 1-3s tras abrir la app se mostraba walletAddress=null
+        // y el fetch fallaba aunque despues si restaurara.
+        if (!connectionRestored) return;
         const fetchTickets = async () => {
             try {
                 if (walletAddress) {
@@ -30,7 +34,7 @@ const Tickets = () => {
             }
         };
         fetchTickets();
-    }, [walletAddress]);
+    }, [walletAddress, connectionRestored]);
 
     const totalPages = Math.max(1, Math.ceil(tickets.length / ITEMS_PER_PAGE));
     const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;

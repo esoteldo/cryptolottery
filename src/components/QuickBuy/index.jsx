@@ -16,7 +16,7 @@ const LOTTERY_WALLET = import.meta.env.VITE_LOTTERY_WALLET || "0QBigX_0lt-QVRdCz
 const QuickBuy = () => {
     const { prices } = useGetPrices();
     const { userData } = useGetTelegramData();
-    const { connected, walletAddress, sendTransaction, connectWallet, disconnectWallet } = useTonConnect();
+    const { connected, connectionRestored, walletAddress, sendTransaction, connectWallet, disconnectWallet } = useTonConnect();
 
     const selectValue = useRef(1);
     const [ticketValue, setTicketValue] = useState(1);
@@ -131,10 +131,11 @@ const QuickBuy = () => {
 
                 <button
                     onClick={handleBuy}
-                    disabled={buying || (connected && !termsAccepted)}
+                    disabled={buying || !connectionRestored || (connected && !termsAccepted)}
                     className="buy-button w-full py-4 rounded-lg text-white font-bold text-lg orbitron pulse-glow disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                     {buying ? 'PROCESSING...' :
+                        !connectionRestored ? 'RESTORING WALLET...' :
                         connected ? 'BUY TICKETS NOW' : 'CONNECT WALLET'}
                 </button>
 

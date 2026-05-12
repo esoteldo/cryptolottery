@@ -1,9 +1,15 @@
-import { useTonConnectUI, useTonWallet } from '@tonconnect/ui-react';
+import { useTonConnectUI, useTonWallet, useIsConnectionRestored } from '@tonconnect/ui-react';
 import { Address } from '@ton/core';
 
 export const useTonConnect = () => {
     const [tonConnectUI] = useTonConnectUI();
     const wallet = useTonWallet();
+    // `connectionRestored` queda en `false` durante los ~1-3s que tarda
+    // TonConnect en restaurar la sesion desde localStorage al abrir la app.
+    // Si la UI no espera este flag, durante esa ventana muestra "Disconnected"
+    // aunque el wallet vaya a aparecer; el usuario clickea Connect y rompe
+    // el restore en curso. Esperar este flag evita race + clicks redundantes.
+    const connectionRestored = useIsConnectionRestored();
 
     const connected = !!wallet;
 
@@ -37,6 +43,7 @@ export const useTonConnect = () => {
 
     return {
         connected,
+        connectionRestored,
         wallet,
         walletAddress,
         tonConnectUI,
