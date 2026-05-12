@@ -25,12 +25,17 @@ api.interceptors.request.use((config) => {
     return config;
 });
 
-// Interceptor de respuesta: manejar 401/403 (token expirado)
+// Interceptor de respuesta: manejar 401 (token expirado / inválido).
+//
+// IMPORTANTE: SOLO 401 limpia el token. 403 (Forbidden) significa que
+// el token es valido pero el endpoint requiere permisos que el user no
+// tiene (ej: endpoints admin para users no-admin). En 403 NO se limpia
+// el token, sino el componente AdminApprovals deslogueaba al user comun
+// al checkar si era admin.
 api.interceptors.response.use(
     (response) => response,
     (error) => {
-        if (error.response?.status === 401 || error.response?.status === 403) {
-            // Token expirado o inválido - limpiar
+        if (error.response?.status === 401) {
             sessionStorage.removeItem('auth_token');
         }
         return Promise.reject(error);
