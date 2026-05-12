@@ -100,3 +100,20 @@ export const unsuspendWinnerPayout = async (payoutId, adminToken) =>
 // Etapa 5.6: connect-proof (login fuerte de admin)
 export const getProofPayload = async () => api.get(`/admin/proof-payload`)
 export const submitConnectProof = async (data) => api.post(`/admin/connect-proof`, data)
+
+// --- Etapa 5.4: reconciliation y alertas ---
+export const getReconciliationLatest  = async () => api.get(`/admin/reconciliation/latest`)
+export const getReconciliationHistory = async (limit = 20) => api.get(`/admin/reconciliation/history?limit=${limit}`)
+export const getActiveAlerts          = async () => api.get(`/admin/alerts`)
+export const ackAlert                 = async (alertId, reason) => api.post(`/admin/alerts/${alertId}/ack`, { reason })
+
+// --- Etapa 5.5: caps globales ---
+export const getCaps              = async () => api.get(`/admin/caps`)
+export const listCapOverrides     = async () => api.get(`/admin/caps/overrides`)
+export const createCapOverride    = async (data) => api.post(`/admin/caps/override`, data)
+export const revokeCapOverride    = async (overrideId, reason) => api.post(`/admin/caps/override/${overrideId}/revoke`, { reason })
+
+// --- Etapa 5.3: drains + wallet balances ---
+export const getWalletBalances    = async () => api.get(`/admin/wallet-balances`)
+export const drainWallet          = async (data, adminToken) => api.post(`/admin/drain-wallet`, data, { headers: adminHeader(adminToken) })
+export const getDrainStatus       = async (drainId) => api.get(`/admin/drain/${drainId}`)
