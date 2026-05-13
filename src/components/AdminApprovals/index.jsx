@@ -274,10 +274,25 @@ const AdminPanel = () => {
         e?.preventDefault?.();
         const { sourceRole, destinationAddress, amount, note } = drainForm;
         if (!destinationAddress) { window.alert("Destination required"); return; }
-        const body = { sourceRole, destinationAddress };
-        if (amount) body.amount = parseFloat(amount);
+        if (!amount) {
+            window.alert(
+                "Amount is required. To drain everything, click 'Fill max' first.\n\n" +
+                "Esto evita el bug de drenado accidental por dejar el campo vacio."
+            );
+            return;
+        }
+        const parsedAmount = parseFloat(amount);
+        if (!(parsedAmount > 0)) { window.alert("Amount must be > 0"); return; }
+        const body = { sourceRole, destinationAddress, amount: parsedAmount };
         if (note) body.note = note;
-        if (!window.confirm(`Confirm drain ${amount || 'ALL minus 0.05 TON buffer'} from ${sourceRole} to ${destinationAddress}?`)) return;
+        // Confirm con monto explicito y BIG, NO placeholder
+        const confirmMsg =
+            `Confirm DRAIN:\n\n` +
+            `  Amount:      ${parsedAmount} TON\n` +
+            `  From:        ${sourceRole}\n` +
+            `  To:          ${destinationAddress}\n\n` +
+            `This is IRREVERSIBLE. Continue?`;
+        if (!window.confirm(confirmMsg)) return;
         setWorking('drain'); setError(null); setDrainResult(null);
         try {
             const res = await drainWallet(body, adminAuth.token);
@@ -476,9 +491,25 @@ const AdminPanel = () => {
         );
     };
 
+    const sourceBalance = walletsData?.balances?.find(b => b.role === drainForm.sourceRole)?.balance;
+    const fillMax = () => {
+        if (sourceBalance == null) {
+            window.alert("Balance no disponible. Click Refresh en tab Wallets primero.");
+            return;
+        }
+        const max = Math.max(0, Math.round((sourceBalance - 0.05) * 1e6) / 1e6);
+        setDrainForm({...drainForm, amount: String(max)});
+    };
+
     const renderDrainsTab = () => (
         <form onSubmit={onDrainSubmit} className="space-y-2 text-xs">
             <h3 className="text-xs font-bold text-purple-400 uppercase">New drain</h3>
+            <div className="text-[10px] text-yellow-400 bg-yellow-900/20 border border-yellow-700/40 rounded p-2">
+                ⚠ Irreversible. Verifica address y monto antes de enviar.
+                {sourceBalance != null && (
+                    <div className="mt-1">Source <b>{drainForm.sourceRole}</b> balance on-chain: <b>{formatTon(sourceBalance)} TON</b></div>
+                )}
+            </div>
             <div>
                 <label className="block text-gray-400 mb-1">Source wallet</label>
                 <select value={drainForm.sourceRole} onChange={e => setDrainForm({...drainForm, sourceRole: e.target.value})} className="w-full bg-gray-800 border border-gray-700 rounded p-1.5 text-white">
@@ -491,8 +522,12 @@ const AdminPanel = () => {
                 <input type="text" value={drainForm.destinationAddress} onChange={e => setDrainForm({...drainForm, destinationAddress: e.target.value})} placeholder="EQ... or 0Q..." className="w-full bg-gray-800 border border-gray-700 rounded p-1.5 text-white font-mono" />
             </div>
             <div>
-                <label className="block text-gray-400 mb-1">Amount (TON, empty = drain all minus 0.05)</label>
-                <input type="number" step="0.0001" value={drainForm.amount} onChange={e => setDrainForm({...drainForm, amount: e.target.value})} placeholder="0.05" className="w-full bg-gray-800 border border-gray-700 rounded p-1.5 text-white" />
+                <label className="block text-gray-400 mb-1">Amount (TON) <span className="text-red-400">*required</span></label>
+                <div className="flex gap-1">
+                    <input type="number" step="0.0001" value={drainForm.amount} onChange={e => setDrainForm({...drainForm, amount: e.target.value})} placeholder="e.g. 1.5" className="flex-1 bg-gray-800 border border-gray-700 rounded p-1.5 text-white" />
+                    <button type="button" onClick={fillMax} className="px-2 rounded bg-gray-700 hover:bg-gray-600 text-[10px] text-gray-200">Fill max</button>
+                </div>
+                <div className="text-[10px] text-gray-500 mt-0.5">Buffer 0.05 TON queda siempre en la wallet origen.</div>
             </div>
             <div>
                 <label className="block text-gray-400 mb-1">Note (audit)</label>
