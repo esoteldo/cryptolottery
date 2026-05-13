@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
+import { Address } from "@ton/core";
 import {
     getAdminPendingApprovals,
     approveWinnerPayout,
@@ -56,6 +57,31 @@ const formatTon = (n) => {
 };
 
 const formatDate = (d) => d ? new Date(d).toLocaleString() : '—';
+
+// SSM guarda addresses en formato EQ (mainnet bounceable). Para mostrar en UI
+// y para que el user pueda copiar/pegar en Tonkeeper, convertimos:
+//   - testnet -> 0Q... (non-bounceable testnet, lo que el faucet espera)
+//   - mainnet -> UQ... (non-bounceable mainnet)
+const toFriendlyAddress = (addr, network) => {
+    if (!addr) return '';
+    try {
+        return Address.parse(addr).toString({
+            bounceable: false,
+            testOnly: network === 'testnet'
+        });
+    } catch {
+        return addr;
+    }
+};
+
+const copyToClipboard = async (text) => {
+    try {
+        await navigator.clipboard.writeText(text);
+        return true;
+    } catch {
+        return false;
+    }
+};
 
 const AdminPanel = () => {
     const { userData } = useGetTelegramData();
@@ -360,25 +386,49 @@ const AdminPanel = () => {
         </div>
     );
 
-    const renderWalletsTab = () => (
-        <div className="space-y-2">
-            <h3 className="text-xs font-bold text-blue-400 uppercase">Wallet balances on-chain</h3>
-            {!walletsData && <p className="text-gray-500 text-xs">Loading...</p>}
-            {walletsData?.balances?.map(b => (
-                <div key={b.role} className="bg-gray-800/60 border border-gray-700 rounded-lg p-2 text-xs">
-                    <div className="flex justify-between mb-1">
-                        <span className="text-white font-semibold uppercase">{b.role}</span>
-                        <span className={`font-mono ${b.error ? 'text-red-400' : 'text-green-400'}`}>
-                            {b.error ? 'ERR' : `${formatTon(b.balance)} TON`}
-                        </span>
-                    </div>
-                    {b.address && <div className="text-[10px] text-gray-500 break-all">{b.address}</div>}
-                    {b.error && <div className="text-[10px] text-red-400">{b.error}</div>}
-                </div>
-            ))}
-            <button onClick={fetchWallets} className="w-full py-1.5 rounded bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold">Refresh</button>
-        </div>
-    );
+    const renderWalletsTab = () => {
+        const network = walletsData?.network;
+        return (
+            <div className="space-y-2">
+                <h3 className="text-xs font-bold text-blue-400 uppercase">
+                    Wallet balances on-chain {network && <span className="text-gray-500 normal-case">({network})</span>}
+                </h3>
+                {!walletsData && <p className="text-gray-500 text-xs">Loading...</p>}
+                {walletsData?.balances?.map(b => {
+                    const friendlyAddr = toFriendlyAddress(b.address, network);
+                    return (
+                        <div key={b.role} className="bg-gray-800/60 border border-gray-700 rounded-lg p-2 text-xs">
+                            <div className="flex justify-between mb-1">
+                                <span className="text-white font-semibold uppercase">{b.role}</span>
+                                <span className={`font-mono ${b.error ? 'text-red-400' : 'text-green-400'}`}>
+                                    {b.error ? 'ERR' : `${formatTon(b.balance)} TON`}
+                                </span>
+                            </div>
+                            {friendlyAddr && (
+                                <div className="flex items-center gap-1">
+                                    <div className="text-[10px] text-gray-500 break-all flex-1 font-mono">{friendlyAddr}</div>
+                                    <button
+                                        type="button"
+                                        onClick={async () => {
+                                            const ok = await copyToClipboard(friendlyAddr);
+                                            if (ok) window.alert('Address copiada al clipboard');
+                                            else window.alert('Copia manual: ' + friendlyAddr);
+                                        }}
+                                        className="px-1.5 py-0.5 rounded bg-gray-700 hover:bg-gray-600 text-[10px] text-gray-200"
+                                        title="Copy"
+                                    >
+                                        Copy
+                                    </button>
+                                </div>
+                            )}
+                            {b.error && <div className="text-[10px] text-red-400">{b.error}</div>}
+                        </div>
+                    );
+                })}
+                <button onClick={fetchWallets} className="w-full py-1.5 rounded bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold">Refresh</button>
+            </div>
+        );
+    };
 
     const renderAlertsTab = () => (
         <div className="space-y-2">
