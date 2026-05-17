@@ -63,7 +63,13 @@ export const loginOrRegister = async (data) => api.post(`/session`, data)
 
 // --- Endpoints protegidos (requieren JWT) ---
 
-// Compra de tickets
+// Intent de compra: PRE-firma. Devuelve { nonce, expiresAt } que el frontend
+// incluye en el payload TonConnect ("lot:<nonce>") y en el POST /transaction
+// final. Permite al cron orphan-recovery (Etapa 6.2) recuperar la compra si
+// el flow se corta entre la firma y el POST.
+export const createTransactionIntent = async (data) => api.post(`/transaction/intent`, data)
+
+// Compra de tickets (POST-firma). Soporta nonce opcional para reclamar el intent.
 export const createTransaction = async (data) => api.post(`/transaction`, data)
 
 // Historial de tickets del usuario

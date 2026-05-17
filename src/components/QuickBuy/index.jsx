@@ -3,7 +3,8 @@ import { Link } from "react-router";
 import { useGetPrices } from "../../context/getPricesContext";
 import { useGetTelegramData } from "../../context/getTelegramDataContext";
 import { useTonConnect } from "../../hooks/useTonConnect";
-import { createTransaction } from "../../api/data";
+import { createTransaction, createTransactionIntent } from "../../api/data";
+import { buildLotteryCommentPayload } from "../../helpers/buildCommentPayload";
 import { toNano } from "@ton/core";
 import "./styles.css";
 import InputTicket from "./InputTicket";
@@ -46,37 +47,67 @@ const QuickBuy = () => {
         setBuying(true);
         setBuyResult(null);
 
+        const ticketsPayload = tickets.map(t => ({ btc: t.btc, eth: t.eth }));
+        const amountInNano = toNano(ticketValue.toString()); // 1 TON por ticket
+
+        // 1. Crear intent PRE-firma. Si falla aqui no se firma nada,
+        //    asi que mostramos error normal sin riesgo de plata perdida.
+        let intent;
         try {
-            // 1. Enviar transaccion TON via wallet
-            const amountInNano = toNano(ticketValue.toString()); // 1 TON por ticket
+            const intentRes = await createTransactionIntent({
+                senderWallet: walletAddress,
+                expectedValueTon: ticketValue,
+                tickets: ticketsPayload
+            });
+            intent = intentRes.data;
+        } catch (error) {
+            console.error("Error creating intent:", error);
+            setBuyResult('error');
+            setBuying(false);
+            return;
+        }
 
-            const result = await sendTransaction(
+        // 2. Firmar TX con payload que lleva el nonce. Si el user cancela aqui,
+        //    el intent queda pending y expira solo en 10 min (TTL Mongo).
+        let signResult;
+        try {
+            const payload = buildLotteryCommentPayload(intent.nonce);
+            signResult = await sendTransaction(
                 LOTTERY_WALLET,
-                amountInNano.toString()
+                amountInNano.toString(),
+                payload
             );
+        } catch (error) {
+            console.error("Error signing TX:", error);
+            if (error.message?.includes('Cancelled') || error.message?.includes('cancel')) {
+                setBuyResult(null); // User cancelled, no error.
+            } else {
+                setBuyResult('error');
+            }
+            setBuying(false);
+            return;
+        }
 
-            // 2. Registrar en el backend
+        // 3. POST /transaction con el nonce. Si esto falla, la TX YA esta on-chain
+        //    y el cron recoverOrphanTransactions del backend la recuperara
+        //    automaticamente (parsea el comment, encuentra el intent, crea
+        //    Transaccion + Tickets retroactivamente). UX: mostramos "processing"
+        //    en vez de error, porque la compra es valida y se reflejara en
+        //    minutos cuando el cron corra.
+        try {
             await createTransaction({
-                boc: result.boc,
+                boc: signResult.boc,
                 lt: Date.now().toString(),
                 value: ticketValue.toString(),
                 senderWallet: walletAddress,
                 idUser: userData.id?.toString() || '',
-                tickets: tickets.map(t => ({
-                    btc: t.btc,
-                    eth: t.eth
-                }))
+                tickets: ticketsPayload,
+                nonce: intent.nonce
             });
-
             setBuyResult('success');
-
         } catch (error) {
-            console.error("Error buying tickets:", error);
-            if (error.message?.includes('Cancelled') || error.message?.includes('cancel')) {
-                setBuyResult(null); // User cancelled, no error
-            } else {
-                setBuyResult('error');
-            }
+            console.error("Error POST /transaction (orphan recovery la procesara):", error);
+            setBuyResult('processing');
         } finally {
             setBuying(false);
         }
@@ -120,6 +151,15 @@ const QuickBuy = () => {
                     <div className="text-center p-3 bg-green-900 bg-opacity-30 rounded-lg border border-green-500">
                         <div className="text-green-400 font-bold">Tickets purchased successfully!</div>
                         <div className="text-xs text-gray-400 mt-1">Transaction is being confirmed on the blockchain...</div>
+                    </div>
+                )}
+                {buyResult === 'processing' && (
+                    <div className="text-center p-3 bg-yellow-900 bg-opacity-30 rounded-lg border border-yellow-500">
+                        <div className="text-yellow-400 font-bold">Payment received, processing...</div>
+                        <div className="text-xs text-gray-400 mt-1">
+                            Your transaction is on-chain. Tickets will appear in a few minutes
+                            once our system reconciles the payment. No action needed.
+                        </div>
                     </div>
                 )}
                 {buyResult === 'error' && (
