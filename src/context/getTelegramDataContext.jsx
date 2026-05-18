@@ -43,7 +43,13 @@ export const GetTelegramDataProvider=({children})=>{
                         idTelegram: user.id.toString(),
                         languaje: user.language_code || 'en',
                         region: Intl.DateTimeFormat().resolvedOptions().timeZone || 'unknown',
-                        idReferal: startParam
+                        idReferal: startParam,
+                        // Alias (@usuario) y nombre de pila de Telegram. El backend
+                        // los persiste y los devuelve en winners/referrals para
+                        // mostrarlos en vez de la wallet truncada. Pueden ser null
+                        // si el user no tiene @alias configurado.
+                        username: user.username || null,
+                        firstName: user.first_name || null
                     });
 
                     if (response.data?.token) {

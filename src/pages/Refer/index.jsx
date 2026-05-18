@@ -4,6 +4,7 @@ import "./styles.css";
 import { QRCodeSVG } from 'qrcode.react';
 import { useEffect, useState } from "react";
 import { useGetTelegramData } from "../../context/getTelegramDataContext";
+import { displayUser, displayInitials } from "../../helpers/displayName";
 import {
     getReferralData,
     getReferralBalance,
@@ -367,10 +368,12 @@ const Refer = () => {
                                     <div key={ref._id || index} className="flex items-center justify-between p-3 bg-gray-900 bg-opacity-30 rounded-lg">
                                         <div className="flex items-center space-x-3">
                                             <div className="w-8 h-8 bg-gradient-to-r from-orange-500 to-blue-500 rounded-full flex items-center justify-center text-xs font-bold">
-                                                {ref.region ? ref.region.slice(0, 2).toUpperCase() : '??'}
+                                                {displayInitials(ref)}
                                             </div>
                                             <div>
-                                                <div className="font-semibold text-sm">{ref.wallet ? ref.wallet.slice(0, 8) + '...' + ref.wallet.slice(-4) : 'No wallet'}</div>
+                                                <div className="font-semibold text-sm truncate max-w-[180px]" title={displayUser(ref)}>
+                                                    {displayUser(ref)}
+                                                </div>
                                                 <div className="text-xs text-gray-400">{ref.region || 'Unknown'}</div>
                                             </div>
                                         </div>

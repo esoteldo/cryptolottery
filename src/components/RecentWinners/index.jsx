@@ -1,6 +1,7 @@
 import LogoBitcoin from "../../assets/images/bitcoin-btc-logo.svg";
 import LogoEthereum from "../../assets/images/ethereum-eth-logo.svg";
 import { useGetInitData } from "../../context/getInitDataContext";
+import { displayUser, displayInitials } from "../../helpers/displayName";
 import "./styles.css";
 
 const RecentWinners = () => {
@@ -12,13 +13,13 @@ const RecentWinners = () => {
         return decPart.padEnd(2, '0').slice(0, 2);
     };
 
-    // Transformar datos del backend al formato del componente
+    // Transformar datos del backend al formato del componente.
+    // Mostramos @username o first_name de Telegram si estan disponibles;
+    // wallet truncada como fallback (users legacy sin alias).
     const winners = initializedData && initData?.winners
         ? initData.winners.map((w) => ({
-            inicial: w.idUser?.wallet ? w.idUser.wallet.slice(0, 2).toUpperCase() : '?',
-            wallet: w.idUser?.wallet
-                ? w.idUser.wallet.slice(0, 6) + '...' + w.idUser.wallet.slice(-4)
-                : 'Unknown',
+            inicial: displayInitials(w.idUser),
+            displayName: displayUser(w.idUser),
             montoPremio: w.idSorteo?.montoGanadoPorUsuario || '0',
             fechaPremio: w.idSorteo?.fecha || '',
             numeroSorteo: w.idSorteo?.numeroSorteo || '-',
@@ -38,7 +39,7 @@ const RecentWinners = () => {
                             <div className="w-8 h-8 bg-gradient-to-r from-orange-500 to-blue-500 rounded-full flex items-center justify-center">
                                 <span className="text-white text-sm font-bold">{winner.inicial}</span>
                             </div>
-                            <div className="font-semibold text-sm">{winner.wallet}</div>
+                            <div className="font-semibold text-sm truncate max-w-[140px]" title={winner.displayName}>{winner.displayName}</div>
                         </div>
                         <div className="text-lg font-bold orbitron text-green-400 mb-1">{winner.montoPremio} TON</div>
                         <div className="flex space-between items-center mb-2">
