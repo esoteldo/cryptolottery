@@ -4,6 +4,10 @@ import LogoEthereum from '../../assets/images/ethereum-eth-logo.svg';
 import { useEffect, useState } from 'react';
 import { getProcessedSorteos, searchWinners } from '../../api/data';
 
+// Busqueda por wallet: oculta hasta retomar la feature (desarrollo posterior).
+// Poner en true reactiva el input + el flujo searchWinners ya implementado.
+const SEARCH_ENABLED = false;
+
 const Results = () => {
     const [allResults, setAllResults] = useState([]);
     const [results, setResults] = useState([]);
@@ -120,16 +124,18 @@ const Results = () => {
             <div className="p-4 pb-2">
                 <div className="glass-card rounded-2xl p-4 mb-4">
                     <div className="space-y-4">
-                        <div>
-                            <input
-                                type="text"
-                                placeholder="Search by wallet address"
-                                className="search-input w-full px-4 py-3 rounded-lg"
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-                            />
-                        </div>
+                        {SEARCH_ENABLED && (
+                            <div>
+                                <input
+                                    type="text"
+                                    placeholder="Search by wallet address"
+                                    className="search-input w-full px-4 py-3 rounded-lg"
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+                                />
+                            </div>
+                        )}
                         <div className="flex space-x-2 flex-wrap overflow-x-hidden pb-2" id='search-box'>
                             {['all', 'today', 'week', 'month', 'jackpot'].map((filter) => (
                                 <button
@@ -169,6 +175,16 @@ const Results = () => {
                             const btcDigits = firstTwoDecimals(sorteo?.precioBitcoin);
                             const ethDigits = firstTwoDecimals(sorteo?.precioEthereum);
 
+                            // Prize per winner: si el backend ya lo calculo (montoGanadoPorUsuario),
+                            // usamos ese. Si no (viene 0/null pero hubo ganadores), lo derivamos
+                            // de montoPremio / ganadores. Con 1 ganador = premio completo.
+                            const totalPrize = Number(sorteo?.montoPremio || 0);
+                            const numGanadores = Number(sorteo?.ganadores || 0);
+                            const perWinnerStored = Number(sorteo?.montoGanadoPorUsuario || 0);
+                            const prizePerWinner = perWinnerStored > 0
+                                ? perWinnerStored
+                                : (numGanadores > 0 ? totalPrize / numGanadores : 0);
+
                             return (
                                 <div key={result._id || index} className="result-card glass-card rounded-2xl p-4" onClick={() => toggleCard(index)}>
                                     <div className="flex justify-between items-start mb-3">
@@ -195,7 +211,7 @@ const Results = () => {
                                             <div className="grid grid-cols-2 gap-4 text-sm">
                                                 <div>
                                                     <div className="text-gray-400">Prize per Winner</div>
-                                                    <div className="font-bold text-green-400">{sorteo?.montoGanadoPorUsuario || '0'} TON</div>
+                                                    <div className="font-bold text-green-400">{prizePerWinner.toFixed(2)} TON</div>
                                                 </div>
                                                 {mode === 'winners' ? (
                                                     <div>
