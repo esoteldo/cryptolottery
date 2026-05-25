@@ -32,6 +32,13 @@ const ShareModal = () => {
 
     const { shareModal, setShareModal } = useGetPrices();
 
+    // VK necesita una URL ABSOLUTA para la imagen de preview (su crawler no
+    // resuelve paths relativos). El import HeroCrypto ya incluye la base
+    // (/cryptolottery/assets/...HASH.jpg); le anteponemos el origin para
+    // formar la URL completa. El hash del asset se mantiene entre builds.
+    const absoluteUrl = (p) => (p && p.startsWith('http')) ? p : `${window.location.origin}${p}`;
+    const shareImage = absoluteUrl(HeroCrypto);
+
   return (
     <>
     {/* Share Modal */}
@@ -94,7 +101,7 @@ const ShareModal = () => {
                      <div className="Demo__some-network">
                        <VKShareButton
                          url={shareUrl}
-                         image={HeroCrypto}
+                         image={shareImage}
                          className="Demo__some-network__share-button"
                        >
                          <VKIcon size={32} round />
