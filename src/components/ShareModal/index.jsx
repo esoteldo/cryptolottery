@@ -8,8 +8,6 @@ import {
   FacebookShareButton,
   GabIcon,
   GabShareButton,
-  LinkedinIcon,
-  LinkedinShareButton,
   OKIcon,
   OKShareButton,
   RedditIcon,
@@ -36,7 +34,7 @@ const ShareModal = () => {
 
   return (
     <>
-         Share Modal 
+    {/* Share Modal */}
     <div id="success-modal"  className={shareModal?"fixed inset-0 modalShow flex items-center justify-center z-50 ":"hidden"}  >
         <div className="glass-card rounded-2xl p-6 m-4 max-w-sm w-full text-center">
                            {/* <div className="text-6xl mb-4">🎉</div> */}
@@ -92,16 +90,6 @@ const ShareModal = () => {
                          <WhatsappIcon size={32} round />
                        </WhatsappShareButton>
                      </div>
-
-                     <div className="Demo__some-network">
-                       <LinkedinShareButton
-                         url={shareUrl}
-                         className="Demo__some-network__share-button"
-                       >
-                         <LinkedinIcon size={32} round />
-                       </LinkedinShareButton>
-                     </div>
-
 
                      <div className="Demo__some-network">
                        <VKShareButton
