@@ -4,7 +4,7 @@ const TermsConditions = () => {
       <div className="p-4 space-y-6 mt-20 mb-20">
         <header className="p-4 relative z-10">
           <h1 className="text-2xl font-bold orbitron">Terms & Conditions</h1>
-          <p className="text-sm text-gray-400 mt-1">Last updated: April 2026</p>
+          <p className="text-sm text-gray-400 mt-1">Last updated: May 2026</p>
         </header>
 
         <div className="p-4">
@@ -33,12 +33,24 @@ const TermsConditions = () => {
             </section>
 
             <section>
-              <h2 className="text-lg font-bold text-white mb-2">4. Payments & Transactions</h2>
+              <h2 className="text-lg font-bold text-white mb-2">4. Prize Distribution</h2>
+              <p className="mb-2">When a draw has at least one winner, the prize pool is distributed as follows:</p>
+              <ul className="list-disc list-inside space-y-1">
+                <li><span className="text-white font-semibold">80%</span> — Winners (split equally among all winning tickets).</li>
+                <li><span className="text-white font-semibold">10%</span> — Server &amp; infrastructure costs.</li>
+                <li><span className="text-white font-semibold">5%</span> — Development team.</li>
+                <li><span className="text-white font-semibold">5%</span> — Referral commissions (see section 6). Any unused portion of this allocation rolls over to the next draw's prize pool.</li>
+              </ul>
+              <p className="mt-2">If a draw has no winners, the entire prize pool rolls over to the next draw and no distribution occurs. All distributions are executed on-chain and are publicly verifiable on the TON blockchain.</p>
+            </section>
+
+            <section>
+              <h2 className="text-lg font-bold text-white mb-2">5. Payments & Transactions</h2>
               <p>All payments are processed on the TON blockchain. Transactions are irreversible once confirmed on the blockchain. CryptoLottery is not responsible for failed transactions due to insufficient funds, network congestion, or incorrect wallet addresses.</p>
             </section>
 
             <section>
-              <h2 className="text-lg font-bold text-white mb-2">5. Referral Program</h2>
+              <h2 className="text-lg font-bold text-white mb-2">6. Referral Program</h2>
               <ul className="list-disc list-inside space-y-1">
                 <li>Bronze Tier (0-19 referrals): 1% commission.</li>
                 <li>Silver Tier (20-49 referrals): 3% commission.</li>
@@ -48,17 +60,17 @@ const TermsConditions = () => {
             </section>
 
             <section>
-              <h2 className="text-lg font-bold text-white mb-2">6. Limitation of Liability</h2>
+              <h2 className="text-lg font-bold text-white mb-2">7. Limitation of Liability</h2>
               <p>CryptoLottery is provided "as is" without warranties. We are not liable for losses arising from blockchain network issues, smart contract vulnerabilities, price feed inaccuracies, or any other circumstances beyond our control.</p>
             </section>
 
             <section>
-              <h2 className="text-lg font-bold text-white mb-2">7. Privacy</h2>
+              <h2 className="text-lg font-bold text-white mb-2">8. Privacy</h2>
               <p>We collect your Telegram user ID and wallet address to provide the service. We do not collect personal identification data beyond what is required for operation. Transaction data is publicly visible on the TON blockchain.</p>
             </section>
 
             <section>
-              <h2 className="text-lg font-bold text-white mb-2">8. Changes</h2>
+              <h2 className="text-lg font-bold text-white mb-2">9. Changes</h2>
               <p>We reserve the right to modify these terms at any time. Continued use of the service after changes constitutes acceptance of the updated terms.</p>
             </section>
 
