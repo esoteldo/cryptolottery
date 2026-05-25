@@ -50,8 +50,10 @@ export const getInitData = async (id) => api.get(`/getinitdata/${id}`)
 // Ultimos ganadores
 export const getWinners = async () => api.get(`/winners`)
 
-// Sorteos procesados (cerrados)
-export const getProcessedSorteos = async () => api.get(`/sorteos`)
+// Sorteos procesados (cerrados) — paginado server-side + filtro.
+// filter: 'all' | 'today' | 'week' | 'month' | 'jackpot'
+export const getProcessedSorteos = async (page = 1, limit = 5, filter = 'all') =>
+    api.get(`/sorteos?page=${page}&limit=${limit}&filter=${filter}`)
 
 // Buscar ganadores por wallet
 export const searchWinners = async (wallet) => api.get(`/searchwinners?wallet=${wallet}`)
@@ -72,8 +74,9 @@ export const createTransactionIntent = async (data) => api.post(`/transaction/in
 // Compra de tickets (POST-firma). Soporta nonce opcional para reclamar el intent.
 export const createTransaction = async (data) => api.post(`/transaction`, data)
 
-// Historial de tickets del usuario
-export const getTickets = async (wallet) => api.get(`/gettransaccions/${wallet}`)
+// Historial de tickets del usuario — paginado server-side.
+export const getTickets = async (wallet, page = 1, limit = 5) =>
+    api.get(`/gettransaccions/${wallet}?page=${page}&limit=${limit}`)
 
 // Datos de referidos (lista de referidos directos)
 export const getReferralData = async (id) => api.get(`/getreferraldata/${id}`)
