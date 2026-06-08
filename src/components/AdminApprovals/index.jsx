@@ -15,7 +15,10 @@ import {
     revokeCapOverride,
     getReconciliationLatest,
     drainWallet,
-    getDrainStatus
+    getDrainStatus,
+    listLotteryWallets,
+    scheduleRotation,
+    cancelRotation
 } from "../../api/data";
 import { useAdminAuth } from "../../hooks/useAdminAuth";
 import { useGetTelegramData } from "../../context/getTelegramDataContext";
@@ -47,7 +50,8 @@ const TABS = [
     { key: 'alerts',         label: 'Alerts' },
     { key: 'caps',           label: 'Caps' },
     { key: 'reconciliation', label: 'Recon' },
-    { key: 'drains',         label: 'Drains' }
+    { key: 'drains',         label: 'Drains' },
+    { key: 'rotation',       label: 'Rotation' }
 ];
 
 const formatTon = (n) => {
@@ -120,6 +124,10 @@ const AdminPanel = () => {
     });
     const [drainResult, setDrainResult] = useState(null);
 
+    // Rotation tab state (Etapa 6.3)
+    const [rotationWallets, setRotationWallets] = useState([]);
+    const [scheduleForm, setScheduleForm] = useState({ address: '', ssmMnemonicPath: '' });
+
     const totalBadge = pending.length + suspended.filter(p => p.canUnsuspend).length + alerts.length;
 
     // -------------------- Fetchers --------------------
@@ -141,6 +149,16 @@ const AdminPanel = () => {
             } else {
                 setError(err.response?.data?.message || err.message);
             }
+        }
+    }, []);
+
+    const fetchRotation = useCallback(async () => {
+        try {
+            const res = await listLotteryWallets();
+            setRotationWallets(res.data?.wallets || []);
+        } catch (err) {
+            const code = err.response?.status;
+            if (code !== 401 && code !== 403) setError(err.response?.data?.message || err.message);
         }
     }, []);
 
@@ -200,11 +218,12 @@ const AdminPanel = () => {
             else if (activeTab === 'alerts') fetchAlerts();
             else if (activeTab === 'caps') fetchCaps();
             else if (activeTab === 'reconciliation') fetchReconciliation();
+            else if (activeTab === 'rotation') fetchRotation();
         };
         refresh();
         const interval = setInterval(refresh, POLL_OPEN_MS);
         return () => clearInterval(interval);
-    }, [showModal, isAdmin, activeTab, fetchApprovals, fetchWallets, fetchAlerts, fetchCaps, fetchReconciliation]);
+    }, [showModal, isAdmin, activeTab, fetchApprovals, fetchWallets, fetchAlerts, fetchCaps, fetchReconciliation, fetchRotation]);
 
     // Background poll on approvals + alerts when modal is closed (for badge)
     useEffect(() => {
@@ -595,6 +614,98 @@ const AdminPanel = () => {
         </form>
     );
 
+    // -------------------- Rotation (Etapa 6.3) --------------------
+
+    const onScheduleSubmit = async (e) => {
+        e?.preventDefault?.();
+        const { address, ssmMnemonicPath } = scheduleForm;
+        if (!address || !ssmMnemonicPath) { window.alert("Address y ssmMnemonicPath son requeridos"); return; }
+        const confirmMsg =
+            `Confirm SCHEDULE rotation:\n\n` +
+            `  Next wallet: ${address}\n` +
+            `  Mnemonic:    ${ssmMnemonicPath}\n\n` +
+            `La rotacion se ejecutara automaticamente en la ventana post-cierre. Continue?`;
+        if (!window.confirm(confirmMsg)) return;
+        setWorking('schedule'); setError(null);
+        try {
+            await scheduleRotation({ address, ssmMnemonicPath }, adminAuth.token);
+            setScheduleForm({ address: '', ssmMnemonicPath: '' });
+            await fetchRotation();
+        } catch (err) {
+            setError(err.response?.data?.message || err.message);
+        } finally { setWorking(null); }
+    };
+
+    const onCancelRotation = async () => {
+        if (!window.confirm("Cancelar la rotacion agendada?")) return;
+        setWorking('cancel-rotation'); setError(null);
+        try {
+            await cancelRotation(adminAuth.token);
+            await fetchRotation();
+        } catch (err) {
+            setError(err.response?.data?.message || err.message);
+        } finally { setWorking(null); }
+    };
+
+    const renderRotationTab = () => {
+        const active = rotationWallets.find(w => w.status === 'active');
+        const scheduled = rotationWallets.find(w => w.status === 'scheduled');
+        const retired = rotationWallets.filter(w => w.status === 'retired');
+        const short = (a) => a ? `${a.slice(0, 8)}…${a.slice(-6)}` : '';
+        return (
+            <div className="space-y-3 text-xs">
+                <div>
+                    <h3 className="text-xs font-bold text-amber-400 uppercase mb-1">Active wallet</h3>
+                    {active ? (
+                        <div className="bg-green-900/20 border border-green-700/40 rounded p-2 font-mono break-all text-green-200">
+                            {active.address}
+                            <div className="text-[10px] text-gray-400 mt-1">since {active.activeFrom ? new Date(active.activeFrom).toISOString().slice(0,16) : '—'}</div>
+                        </div>
+                    ) : <div className="text-gray-500">none</div>}
+                </div>
+
+                <div>
+                    <h3 className="text-xs font-bold text-amber-400 uppercase mb-1">Scheduled (next)</h3>
+                    {scheduled ? (
+                        <div className="bg-blue-900/20 border border-blue-700/40 rounded p-2">
+                            <div className="font-mono break-all text-blue-200">{scheduled.address}</div>
+                            <div className="text-[10px] text-gray-400 mt-1">mnemonic: {scheduled.ssmMnemonicPath}</div>
+                            <button onClick={onCancelRotation} disabled={working === 'cancel-rotation'} className="mt-2 px-2 py-1 rounded bg-red-700 hover:bg-red-600 disabled:opacity-50 text-white text-[10px]">
+                                {working === 'cancel-rotation' ? '...' : 'Cancel rotation'}
+                            </button>
+                        </div>
+                    ) : (
+                        <form onSubmit={onScheduleSubmit} className="space-y-2 bg-gray-800/40 border border-gray-700 rounded p-2">
+                            <div className="text-[10px] text-gray-400">No hay rotacion agendada. Agenda la proxima wallet:</div>
+                            <input type="text" value={scheduleForm.address} onChange={e => setScheduleForm({ ...scheduleForm, address: e.target.value })} placeholder="Next wallet address (EQ.../0Q...)" className="w-full bg-gray-800 border border-gray-700 rounded p-1.5 text-white font-mono" />
+                            <input type="text" value={scheduleForm.ssmMnemonicPath} onChange={e => setScheduleForm({ ...scheduleForm, ssmMnemonicPath: e.target.value })} placeholder="/createwallet/<role>/<stage>/MNEMONIC" className="w-full bg-gray-800 border border-gray-700 rounded p-1.5 text-white font-mono" />
+                            <button type="submit" disabled={working === 'schedule'} className="w-full py-1.5 rounded bg-amber-600 hover:bg-amber-500 disabled:opacity-50 text-black font-semibold">
+                                {working === 'schedule' ? 'Scheduling...' : 'Schedule rotation'}
+                            </button>
+                        </form>
+                    )}
+                </div>
+
+                {retired.length > 0 && (
+                    <div>
+                        <h3 className="text-xs font-bold text-gray-400 uppercase mb-1">Retired ({retired.length})</h3>
+                        <div className="space-y-1">
+                            {retired.slice(0, 8).map(w => (
+                                <div key={w.address} className="text-[10px] text-gray-500 font-mono flex justify-between">
+                                    <span>{short(w.address)}</span>
+                                    <span>{w.activeTo ? new Date(w.activeTo).toISOString().slice(0,10) : '—'}</span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
+                <div className="text-[10px] text-gray-600">
+                    La rotacion la ejecuta el cron en la ventana post-cierre (20:30-21:00 UTC). Agendar aqui no mueve fondos al instante.
+                </div>
+            </div>
+        );
+    };
+
     return (
         <>
             <button
@@ -658,6 +769,7 @@ const AdminPanel = () => {
                             {activeTab === 'caps'           && renderCapsTab()}
                             {activeTab === 'reconciliation' && renderReconciliationTab()}
                             {activeTab === 'drains'         && renderDrainsTab()}
+                            {activeTab === 'rotation'       && renderRotationTab()}
                         </div>
                     </div>
                 </div>

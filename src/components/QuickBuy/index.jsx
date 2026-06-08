@@ -5,14 +5,10 @@ import { useGetTelegramData } from "../../context/getTelegramDataContext";
 import { useTonConnect } from "../../hooks/useTonConnect";
 import { createTransaction, createTransactionIntent } from "../../api/data";
 import { buildLotteryCommentPayload } from "../../helpers/buildCommentPayload";
+import { resolveActiveWalletAddress } from "../../hooks/useLotteryWallet";
 import { toNano } from "@ton/core";
 import "./styles.css";
 import InputTicket from "./InputTicket";
-
-// Wallet que recibe los pagos (debe coincidir con WALLET_ADDRESS del backend).
-// Etapa 5: cutover a lottery wallet dedicada. La direccion anterior
-// (0QAjBeSS-...) era la wallet unica de Etapas 3-4.
-const LOTTERY_WALLET = import.meta.env.VITE_LOTTERY_WALLET || "0QBigX_0lt-QVRdCzwVq0ZcmWbUTzqLpdnF2Do-VfEct4MLh";
 
 const QuickBuy = () => {
     const { prices } = useGetPrices();
@@ -69,11 +65,14 @@ const QuickBuy = () => {
 
         // 2. Firmar TX con payload que lleva el nonce. Si el user cancela aqui,
         //    el intent queda pending y expira solo en 10 min (TTL Mongo).
+        //    Etapa 6.3: resolvemos la wallet activa en runtime (rotacion). Si
+        //    el endpoint falla, resolveActiveWalletAddress cae al env/default.
         let signResult;
         try {
+            const lotteryWallet = await resolveActiveWalletAddress();
             const payload = buildLotteryCommentPayload(intent.nonce);
             signResult = await sendTransaction(
-                LOTTERY_WALLET,
+                lotteryWallet,
                 amountInNano.toString(),
                 payload
             );

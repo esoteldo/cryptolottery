@@ -3,6 +3,7 @@ import HowToPlay from "../components/HowToPlay"
 import PrizePool from "../components/PrizePool"
 import QuickBuy from "../components/QuickBuy"
 import RecentWinners from "../components/RecentWinners"
+import WalletTransparency from "../components/WalletTransparency"
 
 const Main = () => {
 
@@ -15,6 +16,8 @@ const Main = () => {
         <div className="p-4 space-y-6 mt-20">
 
              <PrizePool />
+
+             <WalletTransparency />
 
              <QuickBuy />
 

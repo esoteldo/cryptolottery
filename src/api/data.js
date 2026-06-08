@@ -131,3 +131,12 @@ export const revokeCapOverride    = async (overrideId, reason) => api.post(`/adm
 export const getWalletBalances    = async () => api.get(`/admin/wallet-balances`)
 export const drainWallet          = async (data, adminToken) => api.post(`/admin/drain-wallet`, data, { headers: adminHeader(adminToken) })
 export const getDrainStatus       = async (drainId) => api.get(`/admin/drain/${drainId}`)
+
+// --- Etapa 6.3: rotacion de wallet de loteria ---
+// Publico: wallet activa actual (a donde pagar). Sin auth.
+export const getActiveLotteryWallet = async () => api.get(`/lottery/active-wallet`)
+// Admin (lectura): catalogo de wallets (active/scheduled/retired).
+export const listLotteryWallets     = async () => api.get(`/admin/lottery/wallets`)
+// Admin sensible (proof): agendar / cancelar rotacion.
+export const scheduleRotation       = async (data, adminToken) => api.post(`/admin/lottery/schedule-rotation`, data, { headers: adminHeader(adminToken) })
+export const cancelRotation         = async (adminToken) => api.post(`/admin/lottery/cancel-rotation`, {}, { headers: adminHeader(adminToken) })
