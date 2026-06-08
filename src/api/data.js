@@ -79,7 +79,7 @@ export const getTickets = async (wallet, page = 1, limit = 5) =>
     api.get(`/gettransaccions/${wallet}?page=${page}&limit=${limit}`)
 
 // Datos de referidos (lista de referidos directos)
-export const getReferralData = async (id) => api.get(`/getreferraldata/${id}`)
+export const getReferralData = async (id, page = 1, limit = 5) => api.get(`/getreferraldata/${id}?page=${page}&limit=${limit}`)
 
 // Sistema de comisiones de referidos
 export const getReferralBalance = async () => api.get(`/referral/balance`)

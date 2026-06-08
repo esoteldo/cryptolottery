@@ -20,7 +20,7 @@ const RecentWinners = () => {
         ? initData.winners.map((w) => ({
             inicial: displayInitials(w.idUser),
             displayName: displayUser(w.idUser),
-            montoPremio: w.idSorteo?.montoGanadoPorUsuario || '0',
+            montoPremio: Number(w.idSorteo?.montoGanadoPorUsuario || 0).toFixed(2),
             fechaPremio: w.idSorteo?.fecha || '',
             numeroSorteo: w.idSorteo?.numeroSorteo || '-',
             numeroGanadorBtc: firstTwoDecimals(w.idSorteo?.precioBitcoin),

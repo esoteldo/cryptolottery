@@ -23,9 +23,12 @@ const Refer = () => {
     const { userData, initializedUser } = useGetTelegramData();
     const { shareModal, setShareModal } = useGetPrices();
 
-    // Lista de referidos (cards al fondo)
+    // Lista de referidos (cards al fondo) — paginado server-side.
     const [referrals, setReferrals] = useState([]);
     const [referralsLoading, setReferralsLoading] = useState(true);
+    const [referralsPage, setReferralsPage] = useState(1);
+    const [referralsTotalPages, setReferralsTotalPages] = useState(1);
+    const REFERRALS_PAGE_SIZE = 5;
 
     // Balance autoritativo desde backend
     const [balance, setBalance] = useState(null);
@@ -38,17 +41,19 @@ const Refer = () => {
     // Popup info "por que esta pending?"
     const [pendingInfoOpen, setPendingInfoOpen] = useState(false);
 
-    // Cargar lista de referidos
+    // Cargar lista de referidos (server-side: refetch al cambiar de pagina)
     useEffect(() => {
         if (!initializedUser || !userData?.id) {
             setReferralsLoading(false);
             return;
         }
         const fetchReferrals = async () => {
+            setReferralsLoading(true);
             try {
-                const res = await getReferralData(userData.id);
+                const res = await getReferralData(userData.id, referralsPage, REFERRALS_PAGE_SIZE);
                 const data = res.data.referrals || [];
                 setReferrals(Array.isArray(data) ? data : [data]);
+                setReferralsTotalPages(res.data.totalPages || 1);
             } catch (error) {
                 console.error("Error fetching referral data:", error);
             } finally {
@@ -56,7 +61,7 @@ const Refer = () => {
             }
         };
         fetchReferrals();
-    }, [initializedUser, userData?.id]);
+    }, [initializedUser, userData?.id, referralsPage]);
 
     // Cargar balance de comisiones
     const reloadBalance = async () => {
@@ -384,6 +389,29 @@ const Refer = () => {
                                 ))
                             )}
                         </div>
+
+                        {/* Paginacion de referidos (server-side) */}
+                        {!referralsLoading && referralsTotalPages > 1 && (
+                            <div className="flex items-center justify-between mt-4 text-sm">
+                                <button
+                                    onClick={() => setReferralsPage(p => Math.max(1, p - 1))}
+                                    disabled={referralsPage === 1}
+                                    className="px-3 py-1.5 rounded-lg bg-gray-800 text-gray-200 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-700"
+                                >
+                                    Prev
+                                </button>
+                                <span className="text-gray-400">
+                                    Page {referralsPage} of {referralsTotalPages}
+                                </span>
+                                <button
+                                    onClick={() => setReferralsPage(p => Math.min(referralsTotalPages, p + 1))}
+                                    disabled={referralsPage >= referralsTotalPages}
+                                    className="px-3 py-1.5 rounded-lg bg-gray-800 text-gray-200 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-700"
+                                >
+                                    Next
+                                </button>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
