@@ -63,6 +63,12 @@ const Refer = () => {
         fetchReferrals();
     }, [initializedUser, userData?.id, referralsPage]);
 
+    // Navegacion de paginas (mismo patron que goToPage en Tickets).
+    const goToReferralsPage = (page) => {
+        if (page < 1 || page > referralsTotalPages) return;
+        setReferralsPage(page);
+    };
+
     // Cargar balance de comisiones
     const reloadBalance = async () => {
         if (!initializedUser || !userData?.id) return;
@@ -390,23 +396,23 @@ const Refer = () => {
                             )}
                         </div>
 
-                        {/* Paginacion de referidos (server-side) */}
+                        {/* Paginacion de referidos (server-side, mismo estilo que Tickets) */}
                         {!referralsLoading && referralsTotalPages > 1 && (
-                            <div className="flex items-center justify-between mt-4 text-sm">
+                            <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-700">
                                 <button
-                                    onClick={() => setReferralsPage(p => Math.max(1, p - 1))}
+                                    className="filter-button px-3 py-2 rounded-lg text-sm font-medium disabled:opacity-40 disabled:cursor-not-allowed"
+                                    onClick={() => goToReferralsPage(referralsPage - 1)}
                                     disabled={referralsPage === 1}
-                                    className="px-3 py-1.5 rounded-lg bg-gray-800 text-gray-200 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-700"
                                 >
                                     Prev
                                 </button>
-                                <span className="text-gray-400">
+                                <div className="text-sm text-gray-300 font-medium">
                                     Page {referralsPage} of {referralsTotalPages}
-                                </span>
+                                </div>
                                 <button
-                                    onClick={() => setReferralsPage(p => Math.min(referralsTotalPages, p + 1))}
-                                    disabled={referralsPage >= referralsTotalPages}
-                                    className="px-3 py-1.5 rounded-lg bg-gray-800 text-gray-200 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-700"
+                                    className="filter-button px-3 py-2 rounded-lg text-sm font-medium disabled:opacity-40 disabled:cursor-not-allowed"
+                                    onClick={() => goToReferralsPage(referralsPage + 1)}
+                                    disabled={referralsPage === referralsTotalPages}
                                 >
                                     Next
                                 </button>
