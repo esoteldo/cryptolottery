@@ -110,7 +110,7 @@ const Tickets = () => {
                                             <div className="grid grid-cols-2 gap-4 text-sm">
                                                 <div>
                                                     <div className="text-gray-400">Prize per Winner</div>
-                                                    <div className="font-bold text-green-400">{sorteo?.montoGanadoPorUsuario || '0'} TON</div>
+                                                    <div className="font-bold text-green-400">{Number(sorteo?.montoGanadoPorUsuario || 0).toFixed(2)} TON</div>
                                                 </div>
                                                 <div>
                                                     <div className="text-gray-400">Confirmed</div>
