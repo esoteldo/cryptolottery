@@ -15,6 +15,9 @@ dist-ssr
 *.local
 .env
 
+# build dev (se publica via repo cryptolottery-dev, no se commitea aca)
+docs-dev
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

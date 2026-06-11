@@ -13,7 +13,7 @@ createRoot(document.getElementById('root')).render(
   <StrictMode>
     <TonConnectUIProvider
       manifestUrl={manifestUrl}
-      actionsConfiguration={{ twaReturnUrl: 'https://t.me/cryptolotteryappbot/CryptoLottery' }}
+      actionsConfiguration={{ twaReturnUrl: import.meta.env.VITE_TWA_RETURN_URL || 'https://t.me/cryptolotteryappbot/CryptoLottery' }}
     >
       <BrowserRouter basename={import.meta.env.BASE_URL}>
         <GetTelegramDataProvider>
